@@ -1,9 +1,6 @@
 package Conexion;
 
-/*import entidades.Cliente;
-import entidades.Usuario;*/
 import java.sql.*;
-import java.util.ArrayList;
 
 public class Conexion {
     
@@ -42,8 +39,9 @@ public class Conexion {
             this.con.close();
             return(true);
         }
-        catch(Exception e)
+        catch(SQLException e)
         {
+            System.out.println("error al desconectar: " + e);
             return(false);
         }    
     }
