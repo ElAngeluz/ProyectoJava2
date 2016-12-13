@@ -243,31 +243,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){            
-            ResultSet rs;
-            try{
-                PreparedStatement st;
-                con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
-                st.setInt(1, Integer.parseInt(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRow(),0))));
-                rs = st.executeQuery();                
-                if (rs.next()) {
-                    FrmEdicionProducto frm = new FrmEdicionProducto(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));
-                    frm.setVisible(true);
-                }else{
-                     JOptionPane.showMessageDialog(this,
-                    "El registro a editar ya no existe",
-                    "Edición",
-                    JOptionPane.ERROR_MESSAGE);
-                
-                }
-                st.close();
-                con.close();
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al consultar la base de datos",
-                    "Edición",
-                    JOptionPane.ERROR_MESSAGE);
-            }
+            ResultSet rs;            
         }
         
     }//GEN-LAST:event_bEditarActionPerformed
@@ -290,29 +266,27 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
        if (seleccionEdicionValida()) {
             ArrayList<Productos> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Productos p = new Productos();
-                p.setCodigo((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
-                eliminados.add(p);
+                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                eliminados.add(p);                
             }
             
             try{           
-            
+                con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) { 
-                    PreparedStatement st;
-                    con = Conexion.Conexion.conectar();
+                    PreparedStatement st;                    
                     st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
                     st.setInt(1, eliminados.get(i).getCodigo());
                     st.executeUpdate();
                     st.close();
-                    con.close();
+                    
                     System.out.println("modificación de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
                 }
-                
+                con.close();
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al eliminar el producto en la base de datos",
                     "Eliminación",
-                    JOptionPane.ERROR_MESSAGE);            
+                    JOptionPane.ERROR_MESSAGE);
             }
         }        
     }//GEN-LAST:event_bEliminarActionPerformed

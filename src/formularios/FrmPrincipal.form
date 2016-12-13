@@ -9,6 +9,14 @@
             <Property name="text" type="java.lang.String" value="INICIO"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="miCerrarSesion">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cerrar sesion"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miCerrarSesionActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miSalir">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Salir"/>
@@ -46,6 +54,18 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miIntegrantesActionPerformed"/>
               </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="mConfiguracion">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="CONFIGURACION"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="miIngresarUsuario">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ingresar Usuarios"/>
+              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>

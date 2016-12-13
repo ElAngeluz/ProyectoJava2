@@ -5,6 +5,9 @@
  */
 package formularios;
 
+import Entidades.usuarios;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Andres
@@ -13,9 +16,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     /**
      * Creates new form FrmPrincipal
+     * @param u
      */
-    public FrmPrincipal() {
+    public FrmPrincipal(usuarios u) {
         initComponents();
+        if ("operador".equals(u.getUsuario())) {
+            miIngresarUsuario.setVisible(false);
+        }
     }
 
     /**
@@ -29,15 +36,26 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mbPrincipal = new javax.swing.JMenuBar();
         mIncio = new javax.swing.JMenu();
+        miCerrarSesion = new javax.swing.JMenuItem();
         miSalir = new javax.swing.JMenuItem();
         mMantenimiento = new javax.swing.JMenu();
         miProductos = new javax.swing.JMenuItem();
         mIntegrantes = new javax.swing.JMenu();
         miIntegrantes = new javax.swing.JMenuItem();
+        mConfiguracion = new javax.swing.JMenu();
+        miIngresarUsuario = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         mIncio.setText("INICIO");
+
+        miCerrarSesion.setText("Cerrar sesion");
+        miCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miCerrarSesionActionPerformed(evt);
+            }
+        });
+        mIncio.add(miCerrarSesion);
 
         miSalir.setText("Salir");
         miSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -73,6 +91,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mbPrincipal.add(mIntegrantes);
 
+        mConfiguracion.setText("CONFIGURACION");
+
+        miIngresarUsuario.setText("Ingresar Usuarios");
+        mConfiguracion.add(miIngresarUsuario);
+
+        mbPrincipal.add(mConfiguracion);
+
         setJMenuBar(mbPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -104,6 +129,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_miIntegrantesActionPerformed
 
+    private void miCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCerrarSesionActionPerformed
+        // TODO add your handling code here:
+        int resp = JOptionPane.showConfirmDialog(null,"desea cerrar Sesion?");
+        if (resp == JOptionPane.OK_OPTION) {
+            frmlogin frm = new frmlogin();
+            frm.setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_miCerrarSesionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -131,19 +166,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmPrincipal().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu mConfiguracion;
     private javax.swing.JMenu mIncio;
     private javax.swing.JMenu mIntegrantes;
     private javax.swing.JMenu mMantenimiento;
     private javax.swing.JMenuBar mbPrincipal;
+    private javax.swing.JMenuItem miCerrarSesion;
+    private javax.swing.JMenuItem miIngresarUsuario;
     private javax.swing.JMenuItem miIntegrantes;
     private javax.swing.JMenuItem miProductos;
     private javax.swing.JMenuItem miSalir;

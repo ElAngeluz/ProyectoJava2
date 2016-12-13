@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package general;
-import formularios.FrmPrincipal;
+import formularios.*;
 
 /**
  *
@@ -16,8 +16,8 @@ public class Principal {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here           
-        FrmPrincipal frm = new FrmPrincipal();
+        // TODO code application logic here        
+        frmlogin frm = new frmlogin();
         frm.setVisible(true);        
     }
     

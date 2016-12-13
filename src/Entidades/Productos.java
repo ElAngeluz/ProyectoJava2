@@ -26,8 +26,8 @@ public class Productos {
         cantidad = _cantidad;
     }
 
-    public Productos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Productos(int _codigo) {
+        codigo = _codigo;
     }
 
     public int getCodigo() {
