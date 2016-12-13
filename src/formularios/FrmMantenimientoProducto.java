@@ -5,9 +5,6 @@
  */
 package formularios;
 
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author Andres

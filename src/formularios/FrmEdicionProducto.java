@@ -5,6 +5,8 @@
  */
 package formularios;
 
+import Entidades.Productos;
+
 /**
  *
  * @author Andres
@@ -13,9 +15,15 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
 
     /**
      * Creates new form FrmIngresoProducto
+     * @param p
      */
-    public FrmEdicionProducto() {
+    public FrmEdicionProducto(Productos p) {
         initComponents();
+        tfCantidad.setText(String.valueOf(p.getCantidad()));
+        tfNombre.setText(p.getNombre());
+        tfFecha.setText(String.valueOf(p.getFecha_Caducidad()));
+        tfMarca.setText(p.getMarca());
+        tfCodigo.setText(String.valueOf(p.getCodigo()));
     }
 
     /**
@@ -179,13 +187,6 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmEdicionProducto().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
