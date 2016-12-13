@@ -6,6 +6,14 @@
 package formularios;
 
 import Entidades.Productos;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,7 +31,33 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
         tfNombre.setText(p.getNombre());
         tfFecha.setText(String.valueOf(p.getFecha_Caducidad()));
         tfMarca.setText(p.getMarca());
-        tfCodigo.setText(String.valueOf(p.getCodigo()));
+        tfCodigo.setText(String.valueOf(p.getCodigo()));        
+    }
+
+    FrmEdicionProducto() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private boolean ValidacionControles() {
+        try {
+            Integer.parseInt(tfCantidad.getText());            
+        } catch (NumberFormatException e) {
+            System.out.println("La cantidad no contiene numeros enteros");
+            return false;
+        }
+        try {
+            Integer.parseInt(tfCodigo.getText());            
+        } catch (NumberFormatException e) {
+            System.out.println("el codigo no contiene numeros enteros");
+            return false;
+        }
+        
+        if (tfNombre.getText().isEmpty() || tfMarca.getText().isEmpty() || tfFecha.getText().isEmpty()) {
+            System.out.println("existen campos sin ser llenados");
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -79,6 +113,8 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
                 tfCodigoActionPerformed(evt);
             }
         });
+
+        tfFecha.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,11 +186,39 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfCodigoActionPerformed
 
+    private Connection con;
+    
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
+        if(ValidacionControles()){
+            
+            LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
+            
+            Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
+                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()));
+                        
+            PreparedStatement st;
+            try { 
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("UPDATE prodcutos SET nombres = ?, marca = ?, fecha_caducidad = ?, cantidad = ? WHERE codigo = ?"); 
+                st.setString(1, p.getNombre());
+                st.setString(2, p.getMarca());
+                st.setDate(3, Date.valueOf(todayLocalDate));
+                st.setInt(4, p.getCantidad());
+                st.setInt(5, p.getCodigo());
+                st.executeUpdate();
+                st.close();
+                con.close();
+                System.out.println("modificacion de productos exitosa");
+            } catch (SQLException ex) {
+                Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_bEditarActionPerformed
         private void limpiarFormulario(){
-        tfNombre.setText("");
+        tfNombre.setText(null);
         tfMarca.setText(null);
         tfCantidad.setText(null);
         tfCodigo.setText(null);

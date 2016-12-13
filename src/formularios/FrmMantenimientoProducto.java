@@ -5,6 +5,14 @@
  */
 package formularios;
 
+import Entidades.Productos;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Andres
@@ -148,43 +156,60 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         frm.setVisible(true);
     }//GEN-LAST:event_bIngresarActionPerformed
 
+    private Connection con;
+    
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         FrmEdicionProducto frm = new FrmEdicionProducto();
         frm.setVisible(true);
-    }//GEN-LAST:event_bEditarActionPerformed
-
-    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
-        // TODO add your handling code here:
-        /**if(seleccionEliminacionValida()){
-            int fila = tResultado.getSelectedRow();
-            String cedula = String.valueOf(tResultado.getValueAt(fila,0));
-            Persona p = new Persona();
-            p.setCedula(cedula);
-            try{
-                ArrayList<Persona> registros = Archivo.obtener_registros();
-                int i = Validacion.existePersona(registros, p);
-                registros.remove(i);
-                if(Archivo.actualizar_registros(registros)){
-                    JOptionPane.showMessageDialog(this,
-                    "Se realizó la eliminación correctamente",
-                    "Eliminación",
-                    JOptionPane.ERROR_MESSAGE);
-                    consultarRegistros();
-                }else{
-                    JOptionPane.showMessageDialog(this,
-                    "Ocurrió un erro en la eliminación",
-                    "Eliminación",
-                    JOptionPane.ERROR_MESSAGE);
+        if (seleccionEdicionValida()) {
+            ArrayList<Productos> eliminados= new ArrayList<>(); 
+            for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
+                Productos p = new Productos();
+                p.setCodigo((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                eliminados.add(p);
+            }
+            
+            try{           
+            
+                for (int i = 0; i < eliminados.size(); i++) { 
+                    PreparedStatement st;
+                    con = Conexion.Conexion.conectar();
+                    st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
+                    st.setInt(1, eliminados.get(i).getCodigo());
+                    st.executeUpdate();
+                    st.close();
+                    con.close();
+                    System.out.println("modificación de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
                 }
+                
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al consultar el archivo",
+                    "Ocurrió un error al eliminar el producto en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);            
-            }    
+            }
+        }
         
-        }*/
+        
+    }//GEN-LAST:event_bEditarActionPerformed
+
+    public boolean seleccionEdicionValida(){
+        
+        if(tResultado.getSelectedRowCount()!=1){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar un registro a editar o eliminar",
+                    "Edición",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;    
+    }
+    
+    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
+        // TODO add your handling code here:
+       
         
     }//GEN-LAST:event_bEliminarActionPerformed
 
@@ -220,10 +245,8 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmMantenimientoProducto().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmMantenimientoProducto().setVisible(true);
         });
     }
 
