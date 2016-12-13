@@ -11,6 +11,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +94,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bIngresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 288, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                         .addComponent(bLimpiar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +136,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bIngresar)
                     .addComponent(bLimpiar))
@@ -156,21 +158,25 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
         if(ValidacionControles()){
-            Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
-                    tfMarca.getText(), Date.valueOf(tfFecha.getText()), Integer.parseInt(tfCantidad.getText()));
             
+            LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
+            
+            Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
+                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()));
+                        
             PreparedStatement st;
             try { 
                 con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("INSERT INTO productos(cedula,nombres,apellidos,edad) VALUES(?,?,?,?) ");
+                st = con.prepareStatement("INSERT INTO productos(id,codigo,nombre,marca,fecha_caducidad,cantidad) VALUES(null,?,?,?,?,?) ");
                 st.setInt(1, p.getCodigo());
                 st.setString(2, p.getNombre());
                 st.setString(3, p.getMarca());
-                st.setDate(4, Date.valueOf(tfFecha.getText()));
+                st.setDate(4, Date.valueOf(todayLocalDate));
                 st.setInt(5, p.getCantidad());
                 st.executeUpdate();
                 st.close();
                 con.close();
+                System.out.println("ingreso de productos exitoso");
             } catch (SQLException ex) {
                 Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
@@ -266,6 +272,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             st.setString(1,_codigo);    
             rs = st.executeQuery(); 
             if(rs.next()){
+                System.out.println("existe un producto con el mismo codigo");
                 return false;
             }             
             
@@ -275,7 +282,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             return true;
         }        
         catch(Exception e){
-            System.out.println(e);
+            System.out.println("Error en la consulta de producto. \n"+e);            
             return false;
         } 
     }
