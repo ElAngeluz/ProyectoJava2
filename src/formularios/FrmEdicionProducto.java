@@ -33,10 +33,6 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
         tfMarca.setText(p.getMarca());
         tfCodigo.setText(String.valueOf(p.getCodigo()));        
     }
-
-    FrmEdicionProducto() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     private boolean ValidacionControles() {
         try {

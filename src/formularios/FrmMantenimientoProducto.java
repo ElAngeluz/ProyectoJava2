@@ -9,9 +9,13 @@ import Entidades.Productos;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -24,6 +28,15 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
      */
     public FrmMantenimientoProducto() {
         initComponents();
+        suca();
+    }
+    
+    private void suca(){
+        if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
+            tfDescripcion.setEditable(false);
+        else
+            tfDescripcion.setEditable(true);   
+        tfDescripcion.setText(null);
     }
 
     /**
@@ -52,7 +65,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
             }
         });
 
-        cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO", "CODIGO", "NOMBRE", "MARCA", "FECHA CAD.", "CANTIDAD" }));
+        cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "CODIGO", "NOMBRE", "MARCA" }));
         cbTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoActionPerformed(evt);
@@ -144,12 +157,84 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
 
     private void tfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescripcionActionPerformed
         // TODO add your handling code here:
+        suca();
     }//GEN-LAST:event_tfDescripcionActionPerformed
 
     private void bConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConsultarActionPerformed
         // TODO add your handling code here:
+        consultarRegistros();
     }//GEN-LAST:event_bConsultarActionPerformed
 
+    private void consultarRegistros() {
+        if (formularioValido()) {
+            try {
+                ResultSet rs;                 
+                ArrayList<Productos> resultado= new ArrayList<>();
+                String tipo = String.valueOf(cbTipo.getSelectedItem());
+                String descripcion = tfDescripcion.getText().toLowerCase();
+                
+                PreparedStatement st;
+                con = Conexion.Conexion.conectar(); 
+                                   
+                if(tipo.equalsIgnoreCase("Todos")){
+                    st = con.prepareStatement("SELECT * FROM productos");            
+                    rs = st.executeQuery();
+                }else if (tipo.equalsIgnoreCase("codigo")){
+                    st = con.prepareStatement("SELECT * FROM productos WHERE codigo = ?");            
+                    st.setInt(1, Integer.parseInt(String.valueOf(descripcion)));
+                    rs = st.executeQuery();
+                }else{
+                    st = con.prepareStatement("SELECT * FROM productos WHERE ? LIKE '%?%'");
+                    st.setString(1,tipo.toLowerCase());
+                    st.setString(2, descripcion);
+                    rs = st.executeQuery();
+                }
+                
+                while(rs.next())
+                {
+                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));                    
+                }
+                con.close();
+                DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
+                dtm.setRowCount(0);
+                for (Productos p:resultado) {
+                    Vector fila = new Vector();
+                    fila.add(p.getCodigo());
+                    fila.add(p.getNombre());
+                    fila.add(p.getMarca());
+                    fila.add(p.getFecha_Caducidad());
+                    fila.add(p.getCantidad());
+                    dtm.addRow(fila);
+                }
+            } catch (Exception e) {
+            }
+        }
+    }    
+    
+    private boolean formularioValido() {        
+        
+        if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS") && tfDescripcion.getText().equalsIgnoreCase(""))){
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar una descripción",
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(String.valueOf(cbTipo.getSelectedItem()).equals("CODIGO")){
+            
+            try{
+                Integer.parseInt(tfDescripcion.getText());
+            }catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(this,
+                    "El código debe ser de solo numero",
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
+                return false;
+            }    
+        }        
+        return true;
+    }
+    
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
         FrmIngresoProducto frm = new FrmIngresoProducto();
@@ -160,9 +245,52 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
-        FrmEdicionProducto frm = new FrmEdicionProducto();
-        frm.setVisible(true);
-        if (seleccionEdicionValida()) {
+        if(seleccionEdicionValida()){            
+            ResultSet rs;
+            try{
+                PreparedStatement st;
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
+                st.setInt(1, Integer.parseInt(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRow(),0))));
+                rs = st.executeQuery();                
+                if (rs.next()) {
+                    FrmEdicionProducto frm = new FrmEdicionProducto(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));
+                    frm.setVisible(true);
+                }else{
+                     JOptionPane.showMessageDialog(this,
+                    "El registro a editar ya no existe",
+                    "Edición",
+                    JOptionPane.ERROR_MESSAGE);
+                
+                }
+                st.close();
+                con.close();
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al consultar la base de datos",
+                    "Edición",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+    }//GEN-LAST:event_bEditarActionPerformed
+
+    public boolean seleccionEdicionValida(){
+        
+        if(tResultado.getSelectedRowCount()!=1){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar un registro a editar o eliminar",
+                    "Edición",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;    
+    }
+    
+    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
+        // TODO add your handling code here:
+       if (seleccionEdicionValida()) {
             ArrayList<Productos> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
                 Productos p = new Productos();
@@ -189,28 +317,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);            
             }
-        }
-        
-        
-    }//GEN-LAST:event_bEditarActionPerformed
-
-    public boolean seleccionEdicionValida(){
-        
-        if(tResultado.getSelectedRowCount()!=1){
-            JOptionPane.showMessageDialog(this,
-                    "Debe seleccionar un registro a editar o eliminar",
-                    "Edición",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        
-        return true;    
-    }
-    
-    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
-        // TODO add your handling code here:
-       
-        
+        }        
     }//GEN-LAST:event_bEliminarActionPerformed
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
