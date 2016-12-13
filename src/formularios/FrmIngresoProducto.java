@@ -5,6 +5,15 @@
  */
 package formularios;
 
+import Entidades.Productos;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Andres
@@ -17,6 +26,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     public FrmIngresoProducto() {
         initComponents();
     }
+    
+    private Connection con;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,7 +92,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bIngresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                         .addComponent(bLimpiar))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +134,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bIngresar)
                     .addComponent(bLimpiar))
@@ -144,9 +155,32 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
 
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
+        if(ValidacionControles()){
+            Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
+                    tfMarca.getText(), Date.valueOf(tfFecha.getText()), Integer.parseInt(tfCantidad.getText()));
+            
+            PreparedStatement st;
+            try { 
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("INSERT INTO productos(cedula,nombres,apellidos,edad) VALUES(?,?,?,?) ");
+                st.setInt(1, p.getCodigo());
+                st.setString(2, p.getNombre());
+                st.setString(3, p.getMarca());
+                st.setDate(4, Date.valueOf(tfFecha.getText()));
+                st.setInt(5, p.getCantidad());
+                st.executeUpdate();
+                st.close();
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_bIngresarActionPerformed
-        private void limpiarFormulario(){
-        tfNombre.setText("");
+    
+    private void limpiarFormulario(){
+        tfNombre.setText(null);
         tfMarca.setText(null);
         tfCantidad.setText(null);
         tfCodigo.setText(null);
@@ -168,22 +202,16 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmIngresoProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmIngresoProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmIngresoProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FrmIngresoProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmIngresoProducto().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmIngresoProducto().setVisible(true);
         });
     }
 
@@ -201,4 +229,54 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     private javax.swing.JTextField tfMarca;
     private javax.swing.JTextField tfNombre;
     // End of variables declaration//GEN-END:variables
+
+    private boolean ValidacionControles() {
+        try {
+            Integer.parseInt(tfCantidad.getText());            
+        } catch (NumberFormatException e) {
+            System.out.println("La cantidad no contiene numeros enteros");
+            return false;
+        }
+        try {
+            Integer.parseInt(tfCodigo.getText());            
+        } catch (NumberFormatException e) {
+            System.out.println("el codigo no contiene numeros enteros");
+            return false;
+        }
+        
+        if (tfNombre.getText().isEmpty() || tfMarca.getText().isEmpty() || tfFecha.getText().isEmpty()) {
+            System.out.println("existen campos sin ser llenados");
+            return false;
+        }
+        
+        return productoValido(tfCodigo.getText()); //verifica que no se haya ingresado un producto con el mismo codigo en la base de datos
+    }
+
+    /*
+    funcion que verifica que no se ingrese un producto con el mismo codigo, retorna true en caso de que no exista un producto de igual codigo
+    */
+    private boolean productoValido(String _codigo) {
+        
+        try
+        {  
+            ResultSet rs;                       
+            PreparedStatement st;
+            con = Conexion.Conexion.conectar();
+            st = con.prepareStatement("SELECT * FROM productos WHERE codigo = ?");            
+            st.setString(1,_codigo);    
+            rs = st.executeQuery(); 
+            if(rs.next()){
+                return false;
+            }             
+            
+            rs.close();
+            st.close();
+            con.close();
+            return true;
+        }        
+        catch(Exception e){
+            System.out.println(e);
+            return false;
+        } 
+    }
 }

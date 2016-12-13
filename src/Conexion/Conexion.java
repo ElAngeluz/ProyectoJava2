@@ -3,8 +3,6 @@ package Conexion;
 import java.sql.*;
 
 public class Conexion {
-    
-       private Connection con;
        private static final String DRIVER = "com.mysql.jdbc.Driver";
        private static final String DBMS = "mysql";
        private static final String HOST = "br-cdbr-azure-south-b.cloudapp.net";
@@ -17,32 +15,19 @@ public class Conexion {
     
     /*METODO CONECTAR*/
    
-    public void conectar ()throws Exception{
+    public static Connection conectar ()throws Exception{
         try {
             Class.forName(DRIVER);
         }catch(ClassNotFoundException ce){
-        }
+            System.out.println("error en el driver: " +ce);
+        }  
         
-            try{
-                this.con = DriverManager.getConnection("jdbc:" + DBMS + "://" + HOST + ":" + PORT + "/" + DATABASE, USER, PASSWORD);                
-            }catch(SQLException exception){
-                System.out.println("ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS: "+exception);
-                return ;
-            } 
-        System.out.println("CONEXION EXITOSA CON LA BASE DE DATOS");
-    }
-    
-    public boolean desconectar()
-    {
-        try
-        {
-            this.con.close();
-            return(true);
-        }
-        catch(SQLException e)
-        {
-            System.out.println("error al desconectar: " + e);
-            return(false);
-        }    
+        try{
+            System.out.println("Conectando a la base de datos");
+            return DriverManager.getConnection("jdbc:" + DBMS + "://" + HOST + ":" + PORT + "/" + DATABASE, USER, PASSWORD);                
+        }catch(SQLException exception){
+            System.out.println("ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS: "+exception);
+            return null;
+        }         
     }
 }
