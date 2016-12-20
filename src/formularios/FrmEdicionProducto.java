@@ -196,7 +196,7 @@ public class FrmEdicionProducto extends javax.swing.JFrame {
             PreparedStatement st;
             try { 
                 con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("UPDATE prodcutos SET nombres = ?, marca = ?, fecha_caducidad = ?, cantidad = ? WHERE codigo = ?"); 
+                st = con.prepareStatement("UPDATE productos SET nombres = ?, marca = ?, fecha_caducidad = ?, cantidad = ? WHERE codigo = ?"); 
                 st.setString(1, p.getNombre());
                 st.setString(2, p.getMarca());
                 st.setDate(3, Date.valueOf(todayLocalDate));

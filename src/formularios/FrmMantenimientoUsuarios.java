@@ -46,6 +46,11 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         tResultado = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         bEditar.setText("EDITAR");
         bEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -158,12 +163,12 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                 }
 
                 rs.close();
-                st.close();
-               
-                
-                    
-                               
+                st.close();     
                 con.close();
+                System.out.println("la base de datos se cerro");
+                                
+                FrmIngresarUsuario frm = new FrmIngresarUsuario(u);
+                frm.setVisible(true);
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al eliminar el producto en la base de datos",
@@ -241,6 +246,12 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         
     }//GEN-LAST:event_bConsultarActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        FrmPrincipal frm = new FrmPrincipal();
+        frm.setVisible(true);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

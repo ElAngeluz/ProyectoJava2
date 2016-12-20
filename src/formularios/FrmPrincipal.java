@@ -25,6 +25,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
     }
 
+    FrmPrincipal() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,7 +49,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mConfiguracion = new javax.swing.JMenu();
         miIngresarUsuario = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         mIncio.setText("INICIO");
 
@@ -151,6 +160,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
         FrmMantenimientoUsuarios frm = new FrmMantenimientoUsuarios();
         frm.setVisible(true);
     }//GEN-LAST:event_miIngresarUsuarioActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        frmlogin frm = new frmlogin();
+        frm.setVisible(true);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

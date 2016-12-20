@@ -20,12 +20,24 @@ import javax.swing.JOptionPane;
  * @author parivera
  */
 public class FrmIngresarUsuario extends javax.swing.JFrame {
+    
+    private boolean editar = false;
 
     /**
      * Creates new form FrmIngresarUsuario
      */
     public FrmIngresarUsuario() {
         initComponents();
+        editar = false;
+    }
+    
+    public FrmIngresarUsuario(usuarios u) {
+        initComponents();
+        
+        jtxtUsuario.setText(u.getUsuario());
+        jtxtUsuario.setEnabled(false);
+        jpPassword.setText(null); 
+        editar = true;
     }
 
     /**
@@ -48,7 +60,7 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
         jbAceptar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel1.setText("Usuario");
@@ -145,43 +157,74 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
     private void jbAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAceptarActionPerformed
         // TODO add your handling code here:
         if (ValidacionUsuario()) {
+            ResultSet rs = null;                       
+            PreparedStatement st = null;
             usuarios u = new usuarios(jtxtUsuario.getText(), String.valueOf(jpPassword.getPassword()),String.valueOf(jcmbEstado.getSelectedItem()),String.valueOf(jcmbRol.getSelectedItem()));
-            
-            try
-            {  
-                ResultSet rs;                       
-                PreparedStatement st;
-                con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");            
-                st.setString(1,u.getUsuario());    
-                rs = st.executeQuery(); 
-                if(rs.next()){
-                    JOptionPane.showMessageDialog(this,
-                    "Existe una persona con ese usuario",
-                    "Crear Usuario",
-                    JOptionPane.ERROR_MESSAGE);
-                    rs.close();
-                    st.close();
-                    con.close();
-                }else{
-                    st = con.prepareStatement("INSERT INTO usuarios(Usuario,clave,estado,rol) VALUES(?,md5(?),?,?) ");
-                    st.setString(1,u.getUsuario()); 
-                    st.setString(2,u.getClave()); 
-                    st.setString(3,u.getEstado()); 
-                    st.setString(4,u.getRol()); 
+            if (editar) {
+                try {
+                    con = Conexion.Conexion.conectar();
+                    st = con.prepareStatement("UPDATE usuarios set clave= md5(?), estado = ?, rol = ? WHERE Usuario = ?");         
+                    st.setString(1,u.getClave()); 
+                    st.setString(2,u.getEstado()); 
+                    st.setString(3,u.getRol()); 
+                    st.setString(4,u.getUsuario());
+                } catch (Exception ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }          
+                editar = false;
+                jtxtUsuario.setEnabled(true);
+            }else{
+                try
+                {  
+                    con = Conexion.Conexion.conectar();
+                    st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");            
+                    st.setString(1,u.getUsuario());    
+                    rs = st.executeQuery(); 
+                    if(rs.next()){
+                        JOptionPane.showMessageDialog(this,
+                        "Existe una persona con ese usuario",
+                        "Crear Usuario",
+                        JOptionPane.ERROR_MESSAGE);
+                    }else{
+                        st = con.prepareStatement("INSERT INTO usuarios(Usuario,clave,estado,rol) VALUES(?,md5(?),?,?) ");
+                        st.setString(1,u.getUsuario()); 
+                        st.setString(2,u.getClave()); 
+                        st.setString(3,u.getEstado()); 
+                        st.setString(4,u.getRol()); 
+
+                        st.executeUpdate();
+                    }
+                }        
+                catch(HeadlessException | SQLException e){
+                    System.out.println("Error en la consulta de usuario. \n"+e);                        
+
+                } catch (Exception ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }finally{
+                    if ( con!=null) {
+                        try {
+                            con.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (st!=null) {
+                        try{
+                            st.close();
+                        }catch (SQLException ex) {
+                            Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     
-                    st.executeUpdate();
-                    
-                    rs.close();
-                    st.close();
-                    con.close();
+                    if (rs!= null) {
+                        try{
+                            rs.close();
+                        }catch (SQLException ex) {
+                            Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                 }
-            }        
-            catch(HeadlessException | SQLException e){
-                System.out.println("Error en la consulta de usuario. \n"+e);            
-               
-            } catch (Exception ex) {
-                Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
         }
     }//GEN-LAST:event_jbAceptarActionPerformed
