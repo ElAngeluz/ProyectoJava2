@@ -240,13 +240,13 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
         try {
             Integer.parseInt(tfCantidad.getText());            
         } catch (NumberFormatException e) {
-            System.out.println("La cantidad no contiene numeros enteros");
+            System.out.println("La cantidad no contiene números enteros");
             return false;
         }
         try {
             Integer.parseInt(tfCodigo.getText());            
         } catch (NumberFormatException e) {
-            System.out.println("el codigo no contiene numeros enteros");
+            System.out.println("el código no contiene números enteros");
             return false;
         }
         
@@ -260,6 +260,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
 
     /*
     funcion que verifica que no se ingrese un producto con el mismo codigo, retorna true en caso de que no exista un producto de igual codigo
+    @_codigo: codigo del producto 
     */
     private boolean productoValido(String _codigo) {
         

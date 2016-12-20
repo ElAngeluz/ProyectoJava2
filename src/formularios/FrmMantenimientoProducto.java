@@ -28,6 +28,9 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         suca();
     }
     
+    /*
+    procedimeinto que cada vez que cambia al tipo de la consulta modifica el campo descripcion
+    */
     private void suca(){
         if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
             tfDescripcion.setEditable(false);

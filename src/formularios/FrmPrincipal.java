@@ -93,7 +93,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mConfiguracion.setText("CONFIGURACIÓN");
 
-        miIngresarUsuario.setText("Ingresar Usuarios");
+        miIngresarUsuario.setText("Usuarios");
         miIngresarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miIngresarUsuarioActionPerformed(evt);
@@ -132,6 +132,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void miIntegrantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIntegrantesActionPerformed
         // TODO add your handling code here:
+        frmIntegrantes frm = new frmIntegrantes();
+        frm.setVisible(true);
     }//GEN-LAST:event_miIntegrantesActionPerformed
 
     private void miCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCerrarSesionActionPerformed
