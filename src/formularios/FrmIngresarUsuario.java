@@ -5,6 +5,16 @@
  */
 package formularios;
 
+import Entidades.usuarios;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author parivera
@@ -125,23 +135,50 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jcmbRolActionPerformed
 
+    private Connection con;
+    
     private void jbAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAceptarActionPerformed
         // TODO add your handling code here:
-
-        usuarios u = new usuarios(jtUsuario.getText(), String.valueOf(jpPassword.getPassword()));
-
-        if(usuarioAutorizado(u))
-        {
-            u.setClave(null);
-            FrmPrincipal frm = new FrmPrincipal(u);
-            frm.setVisible(true);
-            this.dispose();
+        if (ValidacionUsuario()) {
+            usuarios u = new usuarios(jtxtUsuario.getText(), String.valueOf(jpPassword.getPassword()),String.valueOf(jcmbEstado.getSelectedItem()),String.valueOf(jcmbRol.getSelectedItem()));
+            
+            try
+            {  
+                ResultSet rs;                       
+                PreparedStatement st;
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");            
+                st.setString(1,u.getUsuario());    
+                rs = st.executeQuery(); 
+                if(rs.next()){
+                    JOptionPane.showMessageDialog(this,
+                    "Existe una persona con ese usuario",
+                    "Crear Usuario",
+                    JOptionPane.ERROR_MESSAGE);
+                    rs.close();
+                    st.close();
+                    con.close();
+                }else{
+                    st = con.prepareStatement("INSERT INTO usuarios(Usuario,clave,estado,rol) VALUES(?,md5(?),?,?) ");
+                    st.setString(1,u.getUsuario()); 
+                    st.setString(2,u.getClave()); 
+                    st.setString(3,u.getEstado()); 
+                    st.setString(4,u.getRol()); 
+                    
+                    st.executeQuery();
+                    
+                    rs.close();
+                    st.close();
+                    con.close();
+                }
+            }        
+            catch(HeadlessException | SQLException e){
+                System.out.println("Error en la consulta de usuario. \n"+e);            
+               
+            } catch (Exception ex) {
+                Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        else
-        JOptionPane.showMessageDialog(this,
-            "usuario incorrecto",
-            "loguin",
-            JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jbAceptarActionPerformed
 
     /**
@@ -172,10 +209,8 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmIngresarUsuario().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmIngresarUsuario().setVisible(true);
         });
     }
 
@@ -191,4 +226,24 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
     private javax.swing.JPasswordField jpPassword;
     private javax.swing.JTextField jtxtUsuario;
     // End of variables declaration//GEN-END:variables
+
+    private boolean ValidacionUsuario() {
+        if (jtxtUsuario.getText().isEmpty() || String.valueOf(jpPassword.getPassword()).isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+            "Hay campos Vacios",
+            "Crear Usuario",
+            JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        if (String.valueOf(jpPassword.getPassword()).length() < 6) {
+            JOptionPane.showMessageDialog(this,
+            "la contraseña debe tener minimo 6 caracteres",
+            "Crear Usuario",
+            JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;
+    }
 }

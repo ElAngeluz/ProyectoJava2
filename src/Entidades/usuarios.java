@@ -8,6 +8,8 @@ package Entidades;
 /**
  *
  * @author Pedro Abel
+ * usuario admin: admin (12345)
+ * usuario operador: operador(12345)
  */
 public class usuarios {
     private String usuario;
@@ -18,6 +20,18 @@ public class usuarios {
         this.usuario = usuario;
         this.clave = clave;
     }
+
+    public usuarios(String usuario, String clave, String estado, String rol) {
+        this.usuario = usuario;
+        this.clave = clave;
+        this.estado = estado;
+        this.rol = rol;
+    }
+
+    public usuarios(String usuario) {
+        this.usuario = usuario;
+    }
+    
     private String rol;
 
     public String getUsuario() {

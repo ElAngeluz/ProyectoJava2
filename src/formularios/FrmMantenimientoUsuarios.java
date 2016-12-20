@@ -5,6 +5,12 @@
  */
 package formularios;
 
+import Entidades.usuarios;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author parivera
@@ -132,17 +138,19 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){
-            ResultSet rs;
+            
         }
 
     }//GEN-LAST:event_bEditarActionPerformed
 
+    private Connection con;
+    
     private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
         // TODO add your handling code here:
         if (seleccionEdicionValida()) {
-            ArrayList<Productos> eliminados= new ArrayList<>();
+            ArrayList<usuarios> eliminados= new ArrayList<>();
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                usuarios p = new usuarios(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRows()[i],0)));
                 eliminados.add(p);
             }
 
@@ -150,13 +158,17 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                 con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) {
                     PreparedStatement st;
-                    st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");
-                    st.setInt(1, eliminados.get(i).getCodigo());
+                    st = con.prepareStatement("DELETE FROM usuarios WHERE Usuario = ?");
+                    st.setString(1, eliminados.get(i).getUsuario());
                     st.executeUpdate();
                     st.close();
-
-                    System.out.println("modificación de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
-                }
+                    
+                    JOptionPane.showMessageDialog(this,
+                    "modificación de usuario con código: " + eliminados.get(i).getUsuario() + " fue exitosa",
+                    "Eliminación",
+                    JOptionPane.ERROR_MESSAGE);
+                    
+                }                
                 con.close();
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
@@ -169,18 +181,34 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
 
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
-        FrmIngresoProducto frm = new FrmIngresoProducto();
+        FrmIngresarUsuario frm = new FrmIngresarUsuario();
         frm.setVisible(true);
     }//GEN-LAST:event_bIngresarActionPerformed
 
     private void tfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescripcionActionPerformed
         // TODO add your handling code here:
-        suca();
+        
     }//GEN-LAST:event_tfDescripcionActionPerformed
 
+    private boolean suca(){
+        try {
+            Integer.parseInt(String.valueOf(tfDescripcion.getText()));     
+            return false;
+        } catch (NumberFormatException e) {
+            return true;
+        }
+    }
+    
     private void bConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConsultarActionPerformed
         // TODO add your handling code here:
-        consultarRegistros();
+        if (suca()) 
+           consultarRegistros(); 
+        else
+            JOptionPane.showMessageDialog(this,
+                    "Debe ser un usuario valido",
+                    "Consultar",
+                    JOptionPane.ERROR_MESSAGE);
+        
     }//GEN-LAST:event_bConsultarActionPerformed
 
     /**
@@ -211,10 +239,8 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmMantenimientoUsuarios().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmMantenimientoUsuarios().setVisible(true);
         });
     }
 
@@ -227,4 +253,19 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     private javax.swing.JTable tResultado;
     private javax.swing.JTextField tfDescripcion;
     // End of variables declaration//GEN-END:variables
+
+    private boolean seleccionEdicionValida() {
+        if(tResultado.getSelectedRowCount()!=1){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar un registro a editar o eliminar",
+                    "Edición",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
+        return true; 
+    }
+
+    private void consultarRegistros() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

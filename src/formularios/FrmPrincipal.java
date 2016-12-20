@@ -79,7 +79,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mbPrincipal.add(mMantenimiento);
 
-        mIntegrantes.setText("INFO");
+        mIntegrantes.setText("INFORMACIÓN");
 
         miIntegrantes.setText("Integrantes");
         miIntegrantes.addActionListener(new java.awt.event.ActionListener() {
@@ -91,7 +91,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mbPrincipal.add(mIntegrantes);
 
-        mConfiguracion.setText("CONFIGURACION");
+        mConfiguracion.setText("CONFIGURACIÓN");
 
         miIngresarUsuario.setText("Ingresar Usuarios");
         mConfiguracion.add(miIngresarUsuario);

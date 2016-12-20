@@ -44,7 +44,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="mIntegrantes">
           <Properties>
-            <Property name="text" type="java.lang.String" value="INFO"/>
+            <Property name="text" type="java.lang.String" value="INFORMACI&#xd3;N"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="miIntegrantes">
@@ -59,7 +59,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="mConfiguracion">
           <Properties>
-            <Property name="text" type="java.lang.String" value="CONFIGURACION"/>
+            <Property name="text" type="java.lang.String" value="CONFIGURACI&#xd3;N"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="miIngresarUsuario">
