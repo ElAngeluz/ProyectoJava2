@@ -20,7 +20,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
      */
     public FrmPrincipal(usuarios u) {
         initComponents();
-        if ("operador".equals(u.getUsuario())) {
+        if ("operador".equalsIgnoreCase(u.getRol())) {
             miIngresarUsuario.setVisible(false);
         }
     }
@@ -94,6 +94,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mConfiguracion.setText("CONFIGURACIÓN");
 
         miIngresarUsuario.setText("Ingresar Usuarios");
+        miIngresarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miIngresarUsuarioActionPerformed(evt);
+            }
+        });
         mConfiguracion.add(miIngresarUsuario);
 
         mbPrincipal.add(mConfiguracion);
@@ -138,6 +143,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
             dispose();
         }
     }//GEN-LAST:event_miCerrarSesionActionPerformed
+
+    private void miIngresarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIngresarUsuarioActionPerformed
+        // TODO add your handling code here:
+        FrmMantenimientoUsuarios frm = new FrmMantenimientoUsuarios();
+        frm.setVisible(true);
+    }//GEN-LAST:event_miIngresarUsuarioActionPerformed
 
     /**
      * @param args the command line arguments

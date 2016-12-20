@@ -2,6 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/E:/ProyectoJava2/src/formularios/FrmMantenimientoUsuarios.java</file>
+            <file>file:/E:/ProyectoJava2/src/formularios/FrmMantenimientoProducto.java</file>
+            <file>file:/E:/ProyectoJava2/src/formularios/FrmEditarUsuario.java</file>
+            <file>file:/E:/ProyectoJava2/src/formularios/FrmIngresarUsuario.java</file>
+            <file>file:/E:/ProyectoJava2/src/Conexion/Conexion.java</file>
+        </group>
     </open-files>
 </project-private>

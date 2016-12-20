@@ -9,7 +9,7 @@ package Entidades;
  *
  * @author Pedro Abel
  * usuario admin: admin (12345)
- * usuario operador: operador(12345)
+ * usuario operador: parivera(123456)
  */
 public class usuarios {
     private String usuario;

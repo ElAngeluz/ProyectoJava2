@@ -5,11 +5,15 @@
  */
 package formularios;
 
+import Entidades.Productos;
 import Entidades.usuarios;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -138,7 +142,34 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){
-            
+            usuarios u = new usuarios(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRows()[0],0)));
+            ResultSet rs; 
+            try{
+                con = Conexion.Conexion.conectar();
+                PreparedStatement st;
+                st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");
+                st.setString(1, u.getUsuario());
+                rs = st.executeQuery();
+
+                while(rs.next())
+                {
+                    u.setRol(rs.getString("rol"));
+                    u.setEstado(rs.getString("estado"));                        
+                }
+
+                rs.close();
+                st.close();
+               
+                
+                    
+                               
+                con.close();
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al eliminar el producto en la base de datos",
+                    "Eliminación",
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
 
     }//GEN-LAST:event_bEditarActionPerformed
@@ -164,7 +195,7 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                     st.close();
                     
                     JOptionPane.showMessageDialog(this,
-                    "modificación de usuario con código: " + eliminados.get(i).getUsuario() + " fue exitosa",
+                    "eliminación de usuario con código: " + eliminados.get(i).getUsuario() + " fue exitosa",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
                     
@@ -266,6 +297,28 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     }
 
     private void consultarRegistros() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            ResultSet rs;
+            ArrayList<usuarios> resultado= new ArrayList<>();
+            PreparedStatement st;
+            con = Conexion.Conexion.conectar();
+            st = con.prepareStatement("SELECT * FROM usuarios");            
+            rs = st.executeQuery();
+            while(rs.next())
+            {
+                resultado.add(new usuarios(rs.getString("Usuario"),rs.getString("clave"),rs.getString("estado"),rs.getString("rol")));                    
+            }
+            con.close();
+            DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
+                dtm.setRowCount(0);
+                for (usuarios p:resultado) {
+                    Vector fila = new Vector();
+                    fila.add(p.getUsuario());
+                    fila.add(p.getEstado());
+                    fila.add(p.getRol());
+                    dtm.addRow(fila);
+                }
+        } catch (Exception e) {
+        }
     }
 }

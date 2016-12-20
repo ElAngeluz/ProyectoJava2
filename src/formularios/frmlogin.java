@@ -56,6 +56,11 @@ public class frmlogin extends javax.swing.JFrame {
         });
 
         jButton2.setText("salir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,6 +124,11 @@ public class frmlogin extends javax.swing.JFrame {
                     "loguin",
                     JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jbAceptarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     private boolean usuarioAutorizado(usuarios _usuario) {
         
