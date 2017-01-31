@@ -33,11 +33,11 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
     
     public FrmIngresarUsuario(usuarios u) {
         initComponents();
-        
-        jtxtUsuario.setText(u.getUsuario());
-        jtxtUsuario.setEnabled(false);
-        jpPassword.setText(null); 
         editar = true;
+        jtxtUsuario.setText(u.getUsuario());
+        jtxtUsuario.setEnabled(!editar);
+        jpPassword.setText(null); 
+        
     }
 
     /**
@@ -160,47 +160,45 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
             ResultSet rs = null;                       
             PreparedStatement st = null;
             usuarios u = new usuarios(jtxtUsuario.getText(), String.valueOf(jpPassword.getPassword()),String.valueOf(jcmbEstado.getSelectedItem()),String.valueOf(jcmbRol.getSelectedItem()));
-            if (editar) {
-                try {
-                    con = Conexion.Conexion.conectar();
-                    st = con.prepareStatement("UPDATE usuarios set clave= md5(?), estado = ?, rol = ? WHERE Usuario = ?");         
-                    st.setString(1,u.getClave()); 
-                    st.setString(2,u.getEstado()); 
-                    st.setString(3,u.getRol()); 
-                    st.setString(4,u.getUsuario());
-                } catch (Exception ex) {
-                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
-                }          
+            try {
+                if (editar) {
+                
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("UPDATE usuarios set clave= md5(?), estado = ?, rol = ? WHERE Usuario = ?");         
+                st.setString(1,u.getClave()); 
+                st.setString(2,u.getEstado()); 
+                st.setString(3,u.getRol()); 
+                st.setString(4,u.getUsuario());
+                         
                 editar = false;
                 jtxtUsuario.setEnabled(true);
             }else{
-                try
-                {  
-                    con = Conexion.Conexion.conectar();
-                    st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");            
-                    st.setString(1,u.getUsuario());    
-                    rs = st.executeQuery(); 
-                    if(rs.next()){
-                        JOptionPane.showMessageDialog(this,
-                        "Existe una persona con ese usuario",
-                        "Crear Usuario",
-                        JOptionPane.ERROR_MESSAGE);
-                    }else{
-                        st = con.prepareStatement("INSERT INTO usuarios(Usuario,clave,estado,rol) VALUES(?,md5(?),?,?) ");
-                        st.setString(1,u.getUsuario()); 
-                        st.setString(2,u.getClave()); 
-                        st.setString(3,u.getEstado()); 
-                        st.setString(4,u.getRol()); 
+                  
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");            
+                st.setString(1,u.getUsuario());    
+                rs = st.executeQuery(); 
+                
+                if(rs.next()){
+                    JOptionPane.showMessageDialog(this,
+                    "Existe una persona con ese usuario",
+                    "Crear Usuario",
+                    JOptionPane.ERROR_MESSAGE);
+                }else{
+                    st = con.prepareStatement("INSERT INTO usuarios(Usuario,clave,estado,rol) VALUES(?,md5(?),?,?) ");
+                    st.setString(1,u.getUsuario()); 
+                    st.setString(2,u.getClave()); 
+                    st.setString(3,u.getEstado()); 
+                    st.setString(4,u.getRol()); 
 
-                        st.executeUpdate();
-                    }
-                }        
-                catch(HeadlessException | SQLException e){
-                    System.out.println("Error en la consulta de usuario. \n"+e);                        
-
-                } catch (Exception ex) {
-                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
-                }finally{
+                    st.executeUpdate();
+                }               
+            }
+            }catch(HeadlessException | SQLException e){
+                System.out.println("Error en la consulta de usuario. \n"+e); 
+            } catch (Exception ex) {
+                Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
                     if ( con!=null) {
                         try {
                             con.close();
@@ -222,8 +220,8 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
                             Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                }                
-            }
+                } 
+            
         }
     }//GEN-LAST:event_jbAceptarActionPerformed
 

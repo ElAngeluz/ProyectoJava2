@@ -220,7 +220,6 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                     "no se puede consultar! en la base de datos: "+ e,
                     "Consulta",
@@ -284,7 +283,54 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){            
-            ResultSet rs;            
+            Productos p = new Productos((int) tResultado.getValueAt(tResultado.getSelectedRow(), 0));
+            ResultSet rs=null; 
+            PreparedStatement st=null;
+            try {
+                con = Conexion.Conexion.conectar();   
+                
+                st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) = ?");
+                st.setString(1, String.valueOf(p.getCodigo()));
+                rs = st.executeQuery();
+                
+                while (rs.next()) {                    
+                    p.setNombre(rs.getString("nombre"));
+                    p.setMarca(rs.getString("marca"));
+                    p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
+                    p.setCantidad(rs.getInt("cantidad"));
+                }
+                
+                FrmIngresoProducto frm = new FrmIngresoProducto(p);
+                frm.setVisible(true);
+                                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al intentar consultar el producto en la base de datos. "+ e,
+                    "Editar",
+                    JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (rs!= null) {
+                    try{
+                        rs.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
         }        
     }//GEN-LAST:event_bEditarActionPerformed
 
@@ -295,8 +341,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     "Edición",
                     JOptionPane.ERROR_MESSAGE);
             return false;
-        }
-        
+        }        
         return true;    
     }
     
