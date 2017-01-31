@@ -175,7 +175,6 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                                 
                 ArrayList<Productos> resultado= new ArrayList<>();
                 String tipo = String.valueOf(cbTipo.getSelectedItem());
-                String descripcion = tfDescripcion.getText().toLowerCase();
                 
                 con = Conexion.Conexion.conectar(); 
                                    
@@ -183,20 +182,31 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     st = con.prepareStatement("SELECT * FROM productos");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("codigo")){
-                    st = con.prepareStatement("SELECT * FROM productos WHERE codigo = ?");            
-                    st.setInt(1, Integer.parseInt(String.valueOf(descripcion)));
+                    st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
+                    st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }else{
-                    st = con.prepareStatement("SELECT * FROM productos WHERE ? LIKE '%?%'");
-                    st.setString(1,tipo.toLowerCase());
-                    st.setString(2, descripcion);
-                    rs = st.executeQuery();
+                    switch (tipo.toLowerCase()) {
+                        case "nombre":
+                            st = con.prepareStatement("SELECT * FROM productos WHERE nombre LIKE ?");                            
+                            st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");                    
+                            rs = st.executeQuery();
+                            break;
+                        case "marca":
+                            st = con.prepareStatement("SELECT * FROM productos WHERE marca LIKE ?");
+                            st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");                    
+                            rs = st.executeQuery();
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
                 }
                 
                 while(rs.next())
                 {
                     resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));                    
                 }
+                
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
                 dtm.setRowCount(0);
                 ArrayList<Object> fila;
@@ -210,6 +220,11 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                    "no se puede consultar! en la base de datos: "+ e,
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
             }finally{
                 if ( con!=null) {
                     try {
@@ -237,7 +252,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     }    
     
     private boolean formularioValido() {       
-        if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS") && tfDescripcion.getText().equalsIgnoreCase(""))){
+        if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS")) && tfDescripcion.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(this,
                     "Debe ingresar una descripción",
                     "Consulta",
@@ -286,8 +301,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     }
     
     private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
-        // TODO add your handling code here:
-       if (seleccionEdicionValida()) {
+        if (seleccionEdicionValida()) {
             ArrayList<Productos> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
                 Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
@@ -330,7 +344,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_bEliminarActionPerformed
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
-        // TODO add your handling code here:
+        suca();
     }//GEN-LAST:event_cbTipoActionPerformed
 
     /**
