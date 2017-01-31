@@ -335,10 +335,10 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_bEditarActionPerformed
 
     public boolean seleccionEdicionValida(){        
-        if(tResultado.getSelectedRowCount()!=1){
+        if(!(tResultado.getSelectedRowCount() >=1)){
             JOptionPane.showMessageDialog(this,
-                    "Debe seleccionar un registro a editar o eliminar",
-                    "Edición",
+                    "Debe seleccionar al menos un registro a editar o eliminar",
+                    "Eliminar",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }        
@@ -357,13 +357,12 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) { 
                                        
-                    st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
+                    st = con.prepareStatement("DELETE FROM productos WHERE codigo = ?");            
                     st.setInt(1, eliminados.get(i).getCodigo());
                     st.executeUpdate();                    
                     
-                    System.out.println("modificación de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
+                    System.out.println("Eliminacion de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
                 }
-                con.close();
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al eliminar el producto en la base de datos",

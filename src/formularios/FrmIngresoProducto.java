@@ -207,6 +207,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                    
                 }
                 limpiarFormulario();
+                
+                dispose();
             } catch (SQLException ex) {
                 Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
