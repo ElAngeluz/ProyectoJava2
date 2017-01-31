@@ -26,7 +26,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     FrmPrincipal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
