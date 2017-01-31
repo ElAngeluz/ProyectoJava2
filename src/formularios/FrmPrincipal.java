@@ -43,7 +43,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         miCerrarSesion = new javax.swing.JMenuItem();
         miSalir = new javax.swing.JMenuItem();
         mMantenimiento = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
         miProductos = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         mIntegrantes = new javax.swing.JMenu();
         miIntegrantes = new javax.swing.JMenuItem();
         mConfiguracion = new javax.swing.JMenu();
@@ -78,6 +84,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         mMantenimiento.setText("MANTENIMIENTO");
 
+        jMenuItem4.setText("Clientes");
+        mMantenimiento.add(jMenuItem4);
+
         miProductos.setText("Productos");
         miProductos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -86,7 +95,23 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         mMantenimiento.add(miProductos);
 
+        jMenuItem5.setText("Proveedores");
+        mMantenimiento.add(jMenuItem5);
+
         mbPrincipal.add(mMantenimiento);
+
+        jMenu1.setText("REPORTES");
+
+        jMenuItem2.setText("Compras");
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("Ventas");
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem1.setText("Facturacion");
+        jMenu1.add(jMenuItem1);
+
+        mbPrincipal.add(jMenu1);
 
         mIntegrantes.setText("INFORMACIÓN");
 
@@ -197,6 +222,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenu mConfiguracion;
     private javax.swing.JMenu mIncio;
     private javax.swing.JMenu mIntegrantes;
