@@ -9,8 +9,9 @@ import Entidades.usuarios;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -131,11 +132,10 @@ public class frmlogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private boolean usuarioAutorizado(usuarios _usuario) {
-        
+        ResultSet rs=null;                       
+        PreparedStatement st=null;
         try
-        {  
-            ResultSet rs;                       
-            PreparedStatement st;
+        {   
             con = Conexion.Conexion.conectar();
             st = con.prepareStatement("SELECT * FROM usuarios WHERE usuario = ? and clave = md5(?) and estado = ?");            
             st.setString(1,_usuario.getUsuario()); 
@@ -143,22 +143,37 @@ public class frmlogin extends javax.swing.JFrame {
             st.setString(3, "activo");
             rs = st.executeQuery(); 
             if(rs.next()){
-                _usuario.setRol(rs.getString("rol"));
-                rs.close();
-                st.close();
-                con.close();
+                _usuario.setRol(rs.getString("rol"));                
                 return true;
-            }             
-            
-            rs.close();
-            st.close();
-            con.close();
+            }   
             return false;
         }        
         catch(Exception e){
-            System.out.println("Error en la consulta de producto. \n"+e);            
+            System.out.println("Error en la consulta de usuario. \n"+e);            
             return false;
-        } 
+        } finally{
+            if ( con!=null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (st!=null) {
+                try{
+                    st.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (rs!= null) {
+                try{
+                    rs.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
     /**
      * @param args the command line arguments

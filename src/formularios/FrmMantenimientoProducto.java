@@ -9,8 +9,10 @@ import Entidades.Productos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -167,13 +169,14 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
 
     private void consultarRegistros() {
         if (formularioValido()) {
+            ResultSet rs=null; 
+            PreparedStatement st=null;
             try {
-                ResultSet rs;                 
+                                
                 ArrayList<Productos> resultado= new ArrayList<>();
                 String tipo = String.valueOf(cbTipo.getSelectedItem());
                 String descripcion = tfDescripcion.getText().toLowerCase();
                 
-                PreparedStatement st;
                 con = Conexion.Conexion.conectar(); 
                                    
                 if(tipo.equalsIgnoreCase("Todos")){
@@ -194,25 +197,46 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 {
                     resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));                    
                 }
-                con.close();
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
                 dtm.setRowCount(0);
+                ArrayList<Object> fila;
                 for (Productos p:resultado) {
-                    Vector fila = new Vector();
+                    fila = new ArrayList<>();
                     fila.add(p.getCodigo());
                     fila.add(p.getNombre());
                     fila.add(p.getMarca());
                     fila.add(p.getFecha_Caducidad());
                     fila.add(p.getCantidad());
-                    dtm.addRow(fila);
+                    dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
-            }
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (rs!= null) {
+                    try{
+                        rs.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }   
         }
     }    
     
-    private boolean formularioValido() {        
-        
+    private boolean formularioValido() {       
         if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS") && tfDescripcion.getText().equalsIgnoreCase(""))){
             JOptionPane.showMessageDialog(this,
                     "Debe ingresar una descripción",
@@ -221,7 +245,6 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
             return false;
         }
         if(String.valueOf(cbTipo.getSelectedItem()).equals("CODIGO")){
-            
             try{
                 Integer.parseInt(tfDescripcion.getText());
             }catch(NumberFormatException e){
@@ -247,12 +270,10 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(seleccionEdicionValida()){            
             ResultSet rs;            
-        }
-        
+        }        
     }//GEN-LAST:event_bEditarActionPerformed
 
-    public boolean seleccionEdicionValida(){
-        
+    public boolean seleccionEdicionValida(){        
         if(tResultado.getSelectedRowCount()!=1){
             JOptionPane.showMessageDialog(this,
                     "Debe seleccionar un registro a editar o eliminar",
@@ -272,15 +293,14 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
                 eliminados.add(p);                
             }
-            
+            PreparedStatement st=null; 
             try{           
                 con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) { 
-                    PreparedStatement st;                    
+                                       
                     st = con.prepareStatement("DELETE FROM productos WHERE cedula = ?");            
                     st.setInt(1, eliminados.get(i).getCodigo());
-                    st.executeUpdate();
-                    st.close();
+                    st.executeUpdate();                    
                     
                     System.out.println("modificación de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
                 }
@@ -290,6 +310,21 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     "Ocurrió un error al eliminar el producto en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }        
     }//GEN-LAST:event_bEliminarActionPerformed

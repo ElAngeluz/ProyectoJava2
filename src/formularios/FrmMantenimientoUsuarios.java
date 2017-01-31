@@ -5,13 +5,14 @@
  */
 package formularios;
 
-import Entidades.Productos;
 import Entidades.usuarios;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -148,10 +149,11 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(seleccionEdicionValida()){
             usuarios u = new usuarios(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRows()[0],0)));
-            ResultSet rs; 
+            ResultSet rs=null; 
+            PreparedStatement st=null;
             try{
-                con = Conexion.Conexion.conectar();
-                PreparedStatement st;
+                con = Conexion.Conexion.conectar();   
+                
                 st = con.prepareStatement("SELECT * FROM usuarios WHERE Usuario = ?");
                 st.setString(1, u.getUsuario());
                 rs = st.executeQuery();
@@ -162,9 +164,6 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                     u.setEstado(rs.getString("estado"));                        
                 }
 
-                rs.close();
-                st.close();     
-                con.close();
                 System.out.println("la base de datos se cerro");
                                 
                 FrmIngresarUsuario frm = new FrmIngresarUsuario(u);
@@ -174,6 +173,28 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                     "Ocurrió un error al eliminar el producto en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (rs!= null) {
+                    try{
+                        rs.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
 
@@ -189,11 +210,11 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                 usuarios p = new usuarios(String.valueOf(tResultado.getValueAt(tResultado.getSelectedRows()[i],0)));
                 eliminados.add(p);
             }
-
+            PreparedStatement st=null;
             try{
                 con = Conexion.Conexion.conectar();
-                for (int i = 0; i < eliminados.size(); i++) {
-                    PreparedStatement st;
+                
+                for (int i = 0; i < eliminados.size(); i++) {                    
                     st = con.prepareStatement("DELETE FROM usuarios WHERE Usuario = ?");
                     st.setString(1, eliminados.get(i).getUsuario());
                     st.executeUpdate();
@@ -204,13 +225,27 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
                     
-                }                
-                con.close();
+                }              
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al eliminar el producto en la base de datos",
+                    "Ocurrió un error al eliminar el usuario en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }//GEN-LAST:event_bEliminarActionPerformed
@@ -308,10 +343,11 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     }
 
     private void consultarRegistros() {
+        PreparedStatement st=null;
+        ResultSet rs=null;
         try {
-            ResultSet rs;
-            ArrayList<usuarios> resultado= new ArrayList<>();
-            PreparedStatement st;
+            
+            ArrayList<usuarios> resultado= new ArrayList<>();            
             con = Conexion.Conexion.conectar();
             st = con.prepareStatement("SELECT * FROM usuarios");            
             rs = st.executeQuery();
@@ -319,17 +355,43 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
             {
                 resultado.add(new usuarios(rs.getString("Usuario"),rs.getString("clave"),rs.getString("estado"),rs.getString("rol")));                    
             }
-            con.close();
             DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
-                dtm.setRowCount(0);
-                for (usuarios p:resultado) {
-                    Vector fila = new Vector();
-                    fila.add(p.getUsuario());
-                    fila.add(p.getEstado());
-                    fila.add(p.getRol());
-                    dtm.addRow(fila);
+            dtm.setRowCount(0);
+            ArrayList<Object> fila;
+            for (usuarios p:resultado) {
+                fila = new ArrayList<>();
+                fila.add(p.getUsuario());
+                fila.add(p.getEstado());
+                fila.add(p.getRol());
+                dtm.addRow(fila.toArray());
                 }
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al consultar el usuario en la base de datos",
+                    "Eliminación",
+                    JOptionPane.ERROR_MESSAGE);
+        }finally{
+            if ( con!=null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (st!=null) {
+                try{
+                    st.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (rs!= null) {
+                try{
+                    rs.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

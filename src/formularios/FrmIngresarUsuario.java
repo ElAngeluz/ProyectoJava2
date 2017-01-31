@@ -214,8 +214,7 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
                         }catch (SQLException ex) {
                             Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    }
-                    
+                    }                    
                     if (rs!= null) {
                         try{
                             rs.close();
@@ -223,8 +222,7 @@ public class FrmIngresarUsuario extends javax.swing.JFrame {
                             Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                }
-                
+                }                
             }
         }
     }//GEN-LAST:event_jbAceptarActionPerformed

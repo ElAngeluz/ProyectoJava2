@@ -164,7 +164,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
                     tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()));
                         
-            PreparedStatement st;
+            PreparedStatement st=null;
             try { 
                 con = Conexion.Conexion.conectar();
                 st = con.prepareStatement("INSERT INTO productos(id,codigo,nombre,marca,fecha_caducidad,cantidad) VALUES(null,?,?,?,?,?) ");
@@ -174,13 +174,27 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 st.setDate(4, Date.valueOf(todayLocalDate));
                 st.setInt(5, p.getCantidad());
                 st.executeUpdate();
-                st.close();
-                con.close();
+                
                 System.out.println("ingreso de productos exitoso");
             } catch (SQLException ex) {
                 Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }//GEN-LAST:event_bIngresarActionPerformed
@@ -263,11 +277,11 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     @_codigo: codigo del producto 
     */
     private boolean productoValido(String _codigo) {
-        
+        ResultSet rs=null;                       
+            PreparedStatement st=null;
         try
         {  
-            ResultSet rs;                       
-            PreparedStatement st;
+            
             con = Conexion.Conexion.conectar();
             st = con.prepareStatement("SELECT * FROM productos WHERE codigo = ?");            
             st.setString(1,_codigo);    
@@ -275,16 +289,35 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             if(rs.next()){
                 System.out.println("existe un producto con el mismo codigo");
                 return false;
-            }             
-            
-            rs.close();
-            st.close();
-            con.close();
+            }
             return true;
         }        
         catch(Exception e){
-            System.out.println("Error en la consulta de producto. \n"+e);            
+            System.out.println("Error en la consulta de producto. (Validacion) \n"+e);            
             return false;
-        } 
+        } finally{
+            if ( con!=null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (st!=null) {
+                try{
+                    st.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (rs!= null) {
+                try{
+                    rs.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 }
