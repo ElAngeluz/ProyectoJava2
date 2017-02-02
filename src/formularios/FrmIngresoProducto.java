@@ -68,6 +68,10 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
         lFecha = new javax.swing.JLabel();
         tfCodigo = new javax.swing.JTextField();
         tfFecha = new javax.swing.JTextField();
+        lCantidad1 = new javax.swing.JLabel();
+        tfPrecio = new javax.swing.JTextField();
+        tfIva = new javax.swing.JTextField();
+        lCantidad2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -101,18 +105,22 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             }
         });
 
+        lCantidad1.setText("PRECIO");
+
+        lCantidad2.setText("VALOR IVA");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(bIngresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 144, Short.MAX_VALUE)
                         .addComponent(bLimpiar))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(lMarca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -126,7 +134,15 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                             .addComponent(tfMarca)
                             .addComponent(tfCantidad)
                             .addComponent(tfFecha)
-                            .addComponent(tfCodigo))))
+                            .addComponent(tfCodigo)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lCantidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lCantidad1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(1, 1, 1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfPrecio)
+                            .addComponent(tfIva))))
                 .addGap(69, 69, 69))
         );
         layout.setVerticalGroup(
@@ -152,11 +168,19 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lCantidad1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lCantidad2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bIngresar)
                     .addComponent(bLimpiar))
-                .addGap(35, 35, 35))
+                .addContainerGap())
         );
 
         pack();
@@ -171,35 +195,38 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     }//GEN-LAST:event_tfCodigoActionPerformed
 
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
-        // TODO add your handling code here:
         if(ValidacionControles()){
             PreparedStatement st = null;
             try {
                 LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
 
                 Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
-                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()));
+                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()), tfPrecio.getText(), tfIva.getText());
 
                 con = Conexion.Conexion.conectar();
                 if (editar) {
-                    st = con.prepareStatement("UPDATE productos set nombre=?, marca = ?, fecha_caducidad = ?, cantidad=?  WHERE codigo = ?");  
+                    st = con.prepareStatement("UPDATE productos set nombre=?, marca = ?, fecha_caducidad = ?, cantidad=?, precio=?, iva=?  WHERE codigo = ?");  
                     st.setString(1, p.getNombre());
                     st.setString(2, p.getMarca());
                     st.setDate(3, Date.valueOf(todayLocalDate));
                     st.setInt(4, p.getCantidad());
-                    st.setInt(5, p.getCodigo());
+                    st.setString(5, p.getPrecio());
+                    st.setString(6, p.getIva());
+                    st.setInt(7, p.getCodigo());
                     
                     st.executeUpdate();
                     
                     System.out.println("Actualización de productos exitosa");                    
                     
                 }else{                    
-                    st = con.prepareStatement("INSERT INTO productos(id,codigo,nombre,marca,fecha_caducidad,cantidad) VALUES(null,?,?,?,?,?) ");
+                    st = con.prepareStatement("INSERT INTO productos(id,codigo,nombre,marca,fecha_caducidad,cantidad,precio,iva) VALUES(null,?,?,?,?,?,?,?) ");
                     st.setInt(1, p.getCodigo());
                     st.setString(2, p.getNombre());
                     st.setString(3, p.getMarca());
                     st.setDate(4, Date.valueOf(todayLocalDate));
                     st.setInt(5, p.getCantidad());
+                    st.setString(6, p.getPrecio());
+                    st.setString(7, p.getIva());
                     
                     st.executeUpdate();
 
@@ -272,6 +299,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     private javax.swing.JButton bIngresar;
     private javax.swing.JButton bLimpiar;
     private javax.swing.JLabel lCantidad;
+    private javax.swing.JLabel lCantidad1;
+    private javax.swing.JLabel lCantidad2;
     private javax.swing.JLabel lCodigo;
     private javax.swing.JLabel lFecha;
     private javax.swing.JLabel lMarca;
@@ -279,8 +308,10 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
     private javax.swing.JTextField tfCantidad;
     private javax.swing.JTextField tfCodigo;
     private javax.swing.JTextField tfFecha;
+    private javax.swing.JTextField tfIva;
     private javax.swing.JTextField tfMarca;
     private javax.swing.JTextField tfNombre;
+    private javax.swing.JTextField tfPrecio;
     // End of variables declaration//GEN-END:variables
 
     /*
@@ -292,6 +323,24 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
              JOptionPane.showMessageDialog(this,
                 "La cantidad debe tener valores válidos",
+                "Ingresar",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        try {
+            Integer.parseInt(tfPrecio.getText());            
+        } catch (NumberFormatException e) {
+             JOptionPane.showMessageDialog(this,
+                "El precio debe tener valores válidos",
+                "Ingresar",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        try {
+            Integer.parseInt(tfIva.getText());            
+        } catch (NumberFormatException e) {
+             JOptionPane.showMessageDialog(this,
+                "El iva debe tener valores válidos",
                 "Ingresar",
                 JOptionPane.ERROR_MESSAGE);
             return false;

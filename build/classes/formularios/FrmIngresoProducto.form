@@ -23,12 +23,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="68" pref="68" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="bIngresar" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="112" max="32767" attributes="0"/>
+                      <EmptySpace pref="144" max="32767" attributes="0"/>
                       <Component id="bLimpiar" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -48,6 +48,17 @@
                           <Component id="tfCantidad" alignment="0" max="32767" attributes="0"/>
                           <Component id="tfFecha" alignment="0" max="32767" attributes="0"/>
                           <Component id="tfCodigo" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="lCantidad2" min="-2" pref="101" max="-2" attributes="0"/>
+                          <Component id="lCantidad1" min="-2" pref="101" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="tfPrecio" max="32767" attributes="0"/>
+                          <Component id="tfIva" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -83,12 +94,22 @@
                   <Component id="lCantidad" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="tfCantidad" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="42" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="tfPrecio" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lCantidad1" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="tfIva" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lCantidad2" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="37" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="bIngresar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bLimpiar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -147,6 +168,20 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tfFecha">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lCantidad1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="PRECIO"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="tfPrecio">
+    </Component>
+    <Component class="javax.swing.JTextField" name="tfIva">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lCantidad2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="VALOR IVA"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

@@ -204,7 +204,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad")));                    
+                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad"), rs.getString("precio"), rs.getString("iva")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
