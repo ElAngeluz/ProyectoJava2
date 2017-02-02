@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
- *
  * @author Pedro Abel
  */
 public class FrmIngresoProducto extends javax.swing.JFrame {
@@ -45,6 +44,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
         tfFecha.setText(String.valueOf(p.getFecha_Caducidad()));
         tfMarca.setText(String.valueOf(p.getMarca()));
         tfNombre.setText(String.valueOf(p.getNombre()));
+        tfPrecio.setText(String.valueOf(p.getPrecio()));
+        tfIva.setText(String.valueOf(p.getIva()));
     }
 
     /**
@@ -241,6 +242,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             } catch (Exception ex) {
                 Logger.getLogger(FrmIngresoProducto.class.getName()).log(Level.SEVERE, null, ex);
             } finally{
+                
                 if (con!=null) {
                     try {
                         con.close();
@@ -248,6 +250,7 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                         Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                
                 if (st!=null) {
                     try{
                         st.close();
@@ -265,6 +268,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
         tfCantidad.setText(null);
         tfCodigo.setText(null);
         tfFecha.setText(null);
+        tfPrecio.setText(null);
+        tfIva.setText(null);
     }
     /**
      * @param args the command line arguments

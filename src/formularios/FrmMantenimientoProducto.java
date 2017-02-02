@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -107,7 +108,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
 
             },
             new String [] {
-                "CODIGO", "NOMBRE", "MARCA", "FECHA CAD.", "CANTIDAD"
+                "CODIGO", "NOMBRE", "MARCA", "FECHA CAD.", "CANTIDAD", "PRECIO", "IVA"
             }
         ));
         spResultado.setViewportView(tResultado);
@@ -120,29 +121,27 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bConsultar)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bConsultar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bIngresar)
-                        .addGap(67, 67, 67)
+                        .addGap(229, 229, 229)
                         .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bEliminar))
-                    .addComponent(spResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(spResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(tfDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                        .addComponent(bConsultar))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bConsultar)
                     .addComponent(cbTipo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(spResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -151,7 +150,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     .addComponent(bIngresar)
                     .addComponent(bEditar)
                     .addComponent(bEliminar))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -204,7 +203,8 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),rs.getDate("fecha_caducidad"),rs.getInt("cantidad"), rs.getString("precio"), rs.getString("iva")));                    
+                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),
+                            rs.getDate("fecha_caducidad"),rs.getInt("cantidad"), rs.getString("precio"), rs.getString("iva")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
@@ -217,6 +217,8 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     fila.add(p.getMarca());
                     fila.add(p.getFecha_Caducidad());
                     fila.add(p.getCantidad());
+                    fila.add(p.getPrecio());
+                    fila.add(p.getIva());
                     dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
@@ -298,6 +300,8 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     p.setMarca(rs.getString("marca"));
                     p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
                     p.setCantidad(rs.getInt("cantidad"));
+                    p.setPrecio(rs.getString("precio"));                                        
+                    p.setIva(rs.getString("iva"));
                 }
                 
                 FrmIngresoProducto frm = new FrmIngresoProducto(p);
