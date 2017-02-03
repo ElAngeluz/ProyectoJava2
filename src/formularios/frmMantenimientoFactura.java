@@ -5,13 +5,13 @@
  */
 package formularios;
 
+import Entidades.FacturaVentacCab;
 import Entidades.Productos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -19,27 +19,18 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Andres
+ * @author parivera
  */
-public class FrmMantenimientoProducto extends javax.swing.JFrame {
+public class frmMantenimientoFactura extends javax.swing.JFrame {
 
+    private Connection con;
+    
     /**
-     * Creates new form FrmMantenimientoProducto
+     * Creates new form frmMantenimientoFactura
      */
-    public FrmMantenimientoProducto() {
+    public frmMantenimientoFactura() {
         initComponents();
         suca();
-    }
-    
-    /*
-    procedimeinto que cada vez que cambia al tipo de la consulta modifica el campo descripcion
-    */
-    private void suca(){
-        if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
-            tfDescripcion.setEditable(false);
-        else
-            tfDescripcion.setEditable(true);   
-        tfDescripcion.setText(null);
     }
 
     /**
@@ -51,27 +42,27 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tfDescripcion = new javax.swing.JTextField();
         cbTipo = new javax.swing.JComboBox<>();
+        tfDescripcion = new javax.swing.JTextField();
         bConsultar = new javax.swing.JButton();
-        bIngresar = new javax.swing.JButton();
-        bEditar = new javax.swing.JButton();
-        bEliminar = new javax.swing.JButton();
         spResultado = new javax.swing.JScrollPane();
         tResultado = new javax.swing.JTable();
+        bEliminar = new javax.swing.JButton();
+        bEditar = new javax.swing.JButton();
+        bIngresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "ESTADO", "CLIENTE" }));
+        cbTipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbTipoActionPerformed(evt);
+            }
+        });
 
         tfDescripcion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfDescripcionActionPerformed(evt);
-            }
-        });
-
-        cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "CODIGO", "NOMBRE", "MARCA" }));
-        cbTipo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTipoActionPerformed(evt);
             }
         });
 
@@ -82,10 +73,20 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
             }
         });
 
-        bIngresar.setText("INGRESAR");
-        bIngresar.addActionListener(new java.awt.event.ActionListener() {
+        tResultado.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "CODIGO", "CODIGO CLIENTE", "ESTADO", "FECHA", "SUBTOTAL", "IVA", "PRECIO"
+            }
+        ));
+        spResultado.setViewportView(tResultado);
+
+        bEliminar.setText("ELIMINAR");
+        bEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bIngresarActionPerformed(evt);
+                bEliminarActionPerformed(evt);
             }
         });
 
@@ -96,22 +97,12 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
             }
         });
 
-        bEliminar.setText("ELIMINAR");
-        bEliminar.addActionListener(new java.awt.event.ActionListener() {
+        bIngresar.setText("INGRESAR");
+        bIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEliminarActionPerformed(evt);
+                bIngresarActionPerformed(evt);
             }
         });
-
-        tResultado.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "CODIGO", "NOMBRE", "MARCA", "FECHA CAD.", "CANTIDAD", "PRECIO", "IVA"
-            }
-        ));
-        spResultado.setViewportView(tResultado);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -132,7 +123,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                         .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bEliminar))
-                    .addComponent(spResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE))
+                    .addComponent(spResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -150,11 +141,15 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     .addComponent(bIngresar)
                     .addComponent(bEditar)
                     .addComponent(bEliminar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
+        suca();
+    }//GEN-LAST:event_cbTipoActionPerformed
 
     private void tfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescripcionActionPerformed
         // TODO add your handling code here:
@@ -172,53 +167,43 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
             PreparedStatement st=null;
             try {
                                 
-                ArrayList<Productos> resultado= new ArrayList<>();
+                ArrayList<FacturaVentacCab> resultado= new ArrayList<>();
                 String tipo = String.valueOf(cbTipo.getSelectedItem());
                 
                 con = Conexion.Conexion.conectar(); 
                                    
                 if(tipo.equalsIgnoreCase("Todos")){
-                    st = con.prepareStatement("SELECT * FROM productos");            
+                    st = con.prepareStatement("SELECT * FROM ventascabecera");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("codigo")){
-                    st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
+                    //st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
+                    st = con.prepareStatement("SELECT * FROM productos WHERE codigo like ? ");    
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }else{
-                    switch (tipo.toLowerCase()) {
-                        case "nombre":
-                            st = con.prepareStatement("SELECT * FROM productos WHERE nombre LIKE ?");                            
-                            st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");                    
-                            rs = st.executeQuery();
-                            break;
-                        case "marca":
-                            st = con.prepareStatement("SELECT * FROM productos WHERE marca LIKE ?");
-                            st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");                    
-                            rs = st.executeQuery();
-                            break;
-                        default:
-                            throw new AssertionError();
-                    }
+                    st = con.prepareStatement("SELECT * FROM productos WHERE estado = ?");                            
+                    st.setString(1, String.valueOf(tfDescripcion.getText().toLowerCase()));                    
+                    rs = st.executeQuery();
                 }
                 
                 while(rs.next())
                 {
-                    resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),
-                            rs.getDate("fecha_caducidad"),rs.getInt("cantidad"), rs.getString("precio"), rs.getString("iva")));                    
+                    resultado.add(new FacturaVentacCab(rs.getString("estado"), rs.getString("codigo"), rs.getString("idcliente"), 
+                            rs.getDate("fecha"), rs.getDouble("iva"), rs.getDouble("subtotal"), rs.getDouble("total")));
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
                 dtm.setRowCount(0);
                 ArrayList<Object> fila;
-                for (Productos p:resultado) {
+                for (FacturaVentacCab p:resultado) {
                     fila = new ArrayList<>();
-                    fila.add(p.getCodigo());
-                    fila.add(p.getNombre());
-                    fila.add(p.getMarca());
-                    fila.add(p.getFecha_Caducidad());
-                    fila.add(p.getCantidad());
-                    fila.add(p.getPrecio());
+                    fila.add(p.getCodigoFactura());
+                    fila.add(p.getIdCliente());
+                    fila.add(p.getEstado());                    
+                    fila.add(p.getFecha());
+                    fila.add(p.getSubtotal());                    
                     fila.add(p.getIva());
+                    fila.add(p.getTotal());
                     dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
@@ -250,7 +235,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 }
             }   
         }
-    }    
+    } 
     
     private boolean formularioValido() {       
         if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS")) && tfDescripcion.getText().equalsIgnoreCase("")){
@@ -274,39 +259,86 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         return true;
     }
     
-    private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
-        // TODO add your handling code here:
-        FrmIngresoProducto frm = new FrmIngresoProducto();
-        frm.setVisible(true);
-    }//GEN-LAST:event_bIngresarActionPerformed
+    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
+        if (seleccionEdicionValida()) {
+            ArrayList<Productos> eliminados= new ArrayList<>();
+            for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
+                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                eliminados.add(p);
+            }
+            PreparedStatement st=null;
+            try{
+                con = Conexion.Conexion.conectar();
+                for (int i = 0; i < eliminados.size(); i++) {
 
-    private Connection con;
+                    st = con.prepareStatement("DELETE FROM productos WHERE codigo = ?");
+                    st.setInt(1, eliminados.get(i).getCodigo());
+                    st.executeUpdate();
+                    
+                    //TODO: regreso de productos del inventario 
+
+                    System.out.println("Anulacion de factura con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
+                }
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al anular la factuea en la base de datos",
+                    "Eliminación",
+                    JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_bEliminarActionPerformed
+
+    public boolean seleccionEdicionValida(){        
+        if(!(tResultado.getSelectedRowCount() >=1)){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar al menos un registro a editar o eliminar",
+                    "Eliminar",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
+        return true;    
+    }
     
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
-        if(seleccionEdicionValida()){            
+        if(seleccionEdicionValida()){
             Productos p = new Productos((int) tResultado.getValueAt(tResultado.getSelectedRow(), 0));
-            ResultSet rs=null; 
+            ResultSet rs=null;
             PreparedStatement st=null;
             try {
-                con = Conexion.Conexion.conectar();   
-                
+                con = Conexion.Conexion.conectar();
+
                 st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) = ?");
                 st.setString(1, String.valueOf(p.getCodigo()));
                 rs = st.executeQuery();
-                
-                while (rs.next()) {                    
+
+                while (rs.next()) {
                     p.setNombre(rs.getString("nombre"));
                     p.setMarca(rs.getString("marca"));
                     p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
                     p.setCantidad(rs.getInt("cantidad"));
-                    p.setPrecio(rs.getString("precio"));                                        
+                    p.setPrecio(rs.getString("precio"));
                     p.setIva(rs.getString("iva"));
                 }
-                
+
                 FrmIngresoProducto frm = new FrmIngresoProducto(p);
                 frm.setVisible(true);
-                                
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al intentar consultar el producto en la base de datos. "+ e,
@@ -335,65 +367,14 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     }
                 }
             }
-        }        
+        }
     }//GEN-LAST:event_bEditarActionPerformed
 
-    public boolean seleccionEdicionValida(){        
-        if(!(tResultado.getSelectedRowCount() >=1)){
-            JOptionPane.showMessageDialog(this,
-                    "Debe seleccionar al menos un registro a editar o eliminar",
-                    "Eliminar",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }        
-        return true;    
-    }
-    
-    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
-        if (seleccionEdicionValida()) {
-            ArrayList<Productos> eliminados= new ArrayList<>(); 
-            for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
-                eliminados.add(p);                
-            }
-            PreparedStatement st=null; 
-            try{           
-                con = Conexion.Conexion.conectar();
-                for (int i = 0; i < eliminados.size(); i++) { 
-                                       
-                    st = con.prepareStatement("DELETE FROM productos WHERE codigo = ?");            
-                    st.setInt(1, eliminados.get(i).getCodigo());
-                    st.executeUpdate();                    
-                    
-                    System.out.println("Eliminacion de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
-                }
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al eliminar el producto en la base de datos",
-                    "Eliminación",
-                    JOptionPane.ERROR_MESSAGE);
-            }finally{
-                if ( con!=null) {
-                    try {
-                        con.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                if (st!=null) {
-                    try{
-                        st.close();
-                    }catch (SQLException ex) {
-                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }        
-    }//GEN-LAST:event_bEliminarActionPerformed
-
-    private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
-        suca();
-    }//GEN-LAST:event_cbTipoActionPerformed
+    private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
+        // TODO add your handling code here:
+        frmIngresarVentas frm = new frmIngresarVentas();
+        frm.setVisible(true);
+    }//GEN-LAST:event_bIngresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -411,16 +392,20 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmMantenimientoProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(frmMantenimientoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(frmMantenimientoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(frmMantenimientoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(frmMantenimientoFactura.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrmMantenimientoProducto().setVisible(true);
+            new frmMantenimientoFactura().setVisible(true);
         });
     }
 
@@ -434,4 +419,12 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
     private javax.swing.JTable tResultado;
     private javax.swing.JTextField tfDescripcion;
     // End of variables declaration//GEN-END:variables
+
+    private void suca() {
+        if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
+            tfDescripcion.setEditable(false);
+        else
+            tfDescripcion.setEditable(true);   
+        tfDescripcion.setText(null);
+    }
 }
