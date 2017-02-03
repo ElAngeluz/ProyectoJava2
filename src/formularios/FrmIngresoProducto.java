@@ -342,10 +342,10 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
             return false;
         }
         try {
-            Integer.parseInt(tfIva.getText());            
+            Double.parseDouble(tfIva.getText());
         } catch (NumberFormatException e) {
              JOptionPane.showMessageDialog(this,
-                "El iva debe tener valores válidos",
+                "El iva debe tener valores válidos, por ejemplo 0.14",
                 "Ingresar",
                 JOptionPane.ERROR_MESSAGE);
             return false;
