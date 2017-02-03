@@ -5,17 +5,32 @@
  */
 package formularios;
 
+import Entidades.FacturaVentacCab;
+import Entidades.Productos;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author parivera
  */
 public class frmMantenimientoFactura extends javax.swing.JFrame {
 
+    private Connection con;
+    
     /**
      * Creates new form frmMantenimientoFactura
      */
     public frmMantenimientoFactura() {
         initComponents();
+        suca();
     }
 
     /**
@@ -146,6 +161,104 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
         consultarRegistros();
     }//GEN-LAST:event_bConsultarActionPerformed
 
+    private void consultarRegistros() {
+        if (formularioValido()) {
+            ResultSet rs=null; 
+            PreparedStatement st=null;
+            try {
+                                
+                ArrayList<FacturaVentacCab> resultado= new ArrayList<>();
+                String tipo = String.valueOf(cbTipo.getSelectedItem());
+                
+                con = Conexion.Conexion.conectar(); 
+                                   
+                if(tipo.equalsIgnoreCase("Todos")){
+                    st = con.prepareStatement("SELECT * FROM ventascabecera");            
+                    rs = st.executeQuery();
+                }else if (tipo.equalsIgnoreCase("codigo")){
+                    //st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
+                    st = con.prepareStatement("SELECT * FROM productos WHERE codigo like ? ");    
+                    st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
+                    rs = st.executeQuery();
+                }else{
+                    st = con.prepareStatement("SELECT * FROM productos WHERE estado = ?");                            
+                    st.setString(1, String.valueOf(tfDescripcion.getText().toLowerCase()));                    
+                    rs = st.executeQuery();
+                }
+                
+                while(rs.next())
+                {
+                    resultado.add(new FacturaVentacCab(rs.getString("estado"), rs.getString("codigo"), rs.getString("idcliente"), 
+                            rs.getDate("fecha"), rs.getDouble("iva"), rs.getDouble("subtotal"), rs.getDouble("total")));
+                }
+                
+                DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
+                dtm.setRowCount(0);
+                ArrayList<Object> fila;
+                for (FacturaVentacCab p:resultado) {
+                    fila = new ArrayList<>();
+                    fila.add(p.getCodigoFactura());
+                    fila.add(p.getIdCliente());
+                    fila.add(p.getEstado());                    
+                    fila.add(p.getFecha());
+                    fila.add(p.getSubtotal());                    
+                    fila.add(p.getIva());
+                    fila.add(p.getTotal());
+                    dtm.addRow(fila.toArray());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "no se puede consultar! en la base de datos: "+ e,
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (rs!= null) {
+                    try{
+                        rs.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }   
+        }
+    } 
+    
+    private boolean formularioValido() {       
+        if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS")) && tfDescripcion.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar una descripción",
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(String.valueOf(cbTipo.getSelectedItem()).equals("CODIGO")){
+            try{
+                Integer.parseInt(tfDescripcion.getText());
+            }catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(this,
+                    "El código debe ser de solo número",
+                    "Consulta",
+                    JOptionPane.ERROR_MESSAGE);
+                return false;
+            }    
+        }        
+        return true;
+    }
+    
     private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
         if (seleccionEdicionValida()) {
             ArrayList<Productos> eliminados= new ArrayList<>();
@@ -188,6 +301,17 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bEliminarActionPerformed
 
+    public boolean seleccionEdicionValida(){        
+        if(!(tResultado.getSelectedRowCount() >=1)){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar al menos un registro a editar o eliminar",
+                    "Eliminar",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
+        return true;    
+    }
+    
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){
@@ -278,10 +402,8 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new frmMantenimientoFactura().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new frmMantenimientoFactura().setVisible(true);
         });
     }
 
@@ -295,4 +417,12 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
     private javax.swing.JTable tResultado;
     private javax.swing.JTextField tfDescripcion;
     // End of variables declaration//GEN-END:variables
+
+    private void suca() {
+        if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
+            tfDescripcion.setEditable(false);
+        else
+            tfDescripcion.setEditable(true);   
+        tfDescripcion.setText(null);
+    }
 }

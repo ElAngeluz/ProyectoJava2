@@ -46,7 +46,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         miProductos = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        jmFacturas = new javax.swing.JMenu();
+        jmCompras = new javax.swing.JMenuItem();
+        jmVentas = new javax.swing.JMenuItem();
+        jmReportes = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -98,20 +101,40 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem5.setText("Proveedores");
         mMantenimiento.add(jMenuItem5);
 
+        jmFacturas.setText("Facturas");
+        jmFacturas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmFacturasActionPerformed(evt);
+            }
+        });
+
+        jmCompras.setText("Compras");
+        jmFacturas.add(jmCompras);
+
+        jmVentas.setText("Ventas");
+        jmVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmVentasActionPerformed(evt);
+            }
+        });
+        jmFacturas.add(jmVentas);
+
+        mMantenimiento.add(jmFacturas);
+
         mbPrincipal.add(mMantenimiento);
 
-        jMenu1.setText("REPORTES");
+        jmReportes.setText("REPORTES");
 
         jMenuItem2.setText("Compras");
-        jMenu1.add(jMenuItem2);
+        jmReportes.add(jMenuItem2);
 
         jMenuItem3.setText("Ventas");
-        jMenu1.add(jMenuItem3);
+        jmReportes.add(jMenuItem3);
 
         jMenuItem1.setText("Facturacion");
-        jMenu1.add(jMenuItem1);
+        jmReportes.add(jMenuItem1);
 
-        mbPrincipal.add(jMenu1);
+        mbPrincipal.add(jmReportes);
 
         mIntegrantes.setText("INFORMACIÓN");
 
@@ -154,24 +177,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void miSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miSalirActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_miSalirActionPerformed
 
     private void miProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miProductosActionPerformed
-        // TODO add your handling code here:
         FrmMantenimientoProducto frm = new FrmMantenimientoProducto();
         frm.setVisible(true);
     }//GEN-LAST:event_miProductosActionPerformed
 
     private void miIntegrantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIntegrantesActionPerformed
-        // TODO add your handling code here:
         frmIntegrantes frm = new frmIntegrantes();
         frm.setVisible(true);
     }//GEN-LAST:event_miIntegrantesActionPerformed
 
     private void miCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCerrarSesionActionPerformed
-        // TODO add your handling code here:
         int resp = JOptionPane.showConfirmDialog(null,"desea cerrar Sesion?");
         if (resp == JOptionPane.OK_OPTION) {
             frmlogin frm = new frmlogin();
@@ -181,16 +200,23 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_miCerrarSesionActionPerformed
 
     private void miIngresarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miIngresarUsuarioActionPerformed
-        // TODO add your handling code here:
         FrmMantenimientoUsuarios frm = new FrmMantenimientoUsuarios();
         frm.setVisible(true);
     }//GEN-LAST:event_miIngresarUsuarioActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
         frmlogin frm = new frmlogin();
         frm.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
+
+    private void jmFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmFacturasActionPerformed
+        
+    }//GEN-LAST:event_jmFacturasActionPerformed
+
+    private void jmVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmVentasActionPerformed
+        frmMantenimientoFactura frm = new frmMantenimientoFactura();
+        frm.setVisible(true);
+    }//GEN-LAST:event_jmVentasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -222,12 +248,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jmCompras;
+    private javax.swing.JMenu jmFacturas;
+    private javax.swing.JMenu jmReportes;
+    private javax.swing.JMenuItem jmVentas;
     private javax.swing.JMenu mConfiguracion;
     private javax.swing.JMenu mIncio;
     private javax.swing.JMenu mIntegrantes;
