@@ -14,21 +14,22 @@ import java.sql.Date;
 public class FacturaCompraCab {
     private String estado;
     private String codigoFactura;
-    private String idCliente;
+    private String idProveedor;
     private Date fecha;
     private double iva;
     private double subtotal;
     private double total;
-    
-    public FacturaCompraCab(String estado, String codigoFactura) {
+
+    public FacturaCompraCab(String estado, String codigoFactura, Date fecha) {
         this.estado = estado;
         this.codigoFactura = codigoFactura;
+        this.fecha = fecha;
     }
 
-    public FacturaCompraCab(String estado, String codigoFactura, String idCliente, Date fecha, double iva, double subtotal, double total) {
+    public FacturaCompraCab(String codigoFactura, String idProveedor, String estado, Date fecha, double iva, double subtotal, double total) {
         this.estado = estado;
         this.codigoFactura = codigoFactura;
-        this.idCliente = idCliente;
+        this.idProveedor = idProveedor;
         this.fecha = fecha;
         this.iva = iva;
         this.subtotal = subtotal;
@@ -52,11 +53,11 @@ public class FacturaCompraCab {
     }
 
     public String getIdCliente() {
-        return idCliente;
+        return idProveedor;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setIdCliente(String idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
     public Date getFecha() {

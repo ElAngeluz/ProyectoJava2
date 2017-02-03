@@ -20,10 +20,11 @@ public class FacturaVentacCab {
     private double iva;
     private double subtotal;
     private double total;
-    
-    public FacturaVentacCab(String estado, String codigoFactura) {
+
+    public FacturaVentacCab(String estado, String codigoFactura, Date fecha) {
         this.estado = estado;
         this.codigoFactura = codigoFactura;
+        this.fecha = fecha;
     }
 
     public FacturaVentacCab(String estado, String codigoFactura, String idCliente, Date fecha, double iva, double subtotal, double total) {
