@@ -274,12 +274,14 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                     st = con.prepareStatement("DELETE FROM productos WHERE codigo = ?");
                     st.setInt(1, eliminados.get(i).getCodigo());
                     st.executeUpdate();
+                    
+                    //TODO: regreso de productos del inventario 
 
-                    System.out.println("Eliminacion de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
+                    System.out.println("Anulacion de factura con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
                 }
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al eliminar el producto en la base de datos",
+                    "Ocurrió un error al anular la factuea en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
             }finally{
@@ -370,7 +372,7 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
 
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
-        FrmIngresoProducto frm = new FrmIngresoProducto();
+        frmIngresarVentas frm = new frmIngresarVentas();
         frm.setVisible(true);
     }//GEN-LAST:event_bIngresarActionPerformed
 
