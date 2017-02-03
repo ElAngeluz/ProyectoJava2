@@ -5,10 +5,15 @@
  */
 package formularios;
 
+import Entidades.FacturaVentacCab;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -109,6 +114,11 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         jSProductos.setViewportView(jResultados);
 
         jbPreordenar.setText("PRE-ORDENAR");
+        jbPreordenar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbPreordenarActionPerformed(evt);
+            }
+        });
 
         jbActualizar.setText("ACTUALIZAR");
 
@@ -126,8 +136,13 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(225, 225, 225)
+                .addComponent(jbPreordenar)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(68, 68, 68)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jbActualizar))
@@ -148,7 +163,6 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                             .addComponent(tfFecha)
                             .addComponent(tfCodigo)
                             .addComponent(jcmbEstado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jSProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(lCantidad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -161,10 +175,6 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                             .addComponent(jlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(69, 69, 69))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(225, 225, 225)
-                .addComponent(jbPreordenar)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,8 +198,8 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jbPreordenar)
                 .addGap(18, 18, 18)
-                .addComponent(jSProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jSProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jbActualizar)
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -226,15 +236,10 @@ public class frmIngresarVentas extends javax.swing.JFrame {
             PreparedStatement st = null;
             try {
                 LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
-                
-                
-
-                Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(),
-                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfSubtotal.getText()), tfTotal.getText(), tfIva.getText());
 
                 con = Conexion.Conexion.conectar();
                 if (editar) {
-                    st = con.prepareStatement("UPDATE productos set nombre=?, marca = ?, fecha_caducidad = ?, cantidad=?, precio=?, iva=?  WHERE codigo = ?");
+                    /*st = con.prepareStatement("UPDATE productos set nombre=?, marca = ?, fecha_caducidad = ?, cantidad=?, precio=?, iva=?  WHERE codigo = ?");
                     st.setString(1, p.getNombre());
                     st.setString(2, p.getMarca());
                     st.setDate(3, Date.valueOf(todayLocalDate));
@@ -245,22 +250,8 @@ public class frmIngresarVentas extends javax.swing.JFrame {
 
                     st.executeUpdate();
 
-                    System.out.println("Actualización de productos exitosa");
-
-                }else{
-                    st = con.prepareStatement("INSERT INTO productos(id,codigo,nombre,marca,fecha_caducidad,cantidad,precio,iva) VALUES(null,?,?,?,?,?,?,?) ");
-                    st.setInt(1, p.getCodigo());
-                    st.setString(2, p.getNombre());
-                    st.setString(3, p.getMarca());
-                    st.setDate(4, Date.valueOf(todayLocalDate));
-                    st.setInt(5, p.getCantidad());
-                    st.setString(6, p.getPrecio());
-                    st.setString(7, p.getIva());
-
-                    st.executeUpdate();
-
-                    System.out.println("Ingreso de productos exitoso");
-
+                    System.out.println("Actualización de productos exitosa");*/
+                
                 }
                 limpiarFormulario();
 
@@ -289,6 +280,57 @@ public class frmIngresarVentas extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_bIngresarActionPerformed
+
+    private void jbPreordenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPreordenarActionPerformed
+        if (ValidacionControles()) {
+            PreparedStatement st = null;
+            LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
+            try {
+                FacturaVentacCab f = new FacturaVentacCab(jcmbEstado.getSelectedItem().toString(), tfCodigo.getText(), Date.valueOf(todayLocalDate),tfCliente.getText());
+                con = Conexion.Conexion.conectar();
+                
+                if (editar) {
+                    
+
+                }else{
+                    st = con.prepareStatement("INSERT INTO ventascabecera(idventas,codigo,idcliente,fecha,estado) VALUES(null,?,?,?,?) ");
+                    st.setString(1, f.getCodigoFactura());
+                    st.setString(2, f.getIdCliente());                    
+                    st.setDate(3, Date.valueOf(todayLocalDate));
+                    st.setString(4, f.getEstado());
+
+                    st.executeUpdate();
+
+                    System.out.println("Ingreso de preventa exitoso");
+                    
+                    JOptionPane.showMessageDialog(this,
+                        "ingrese este codigo de venta en la aplicación del telfono: " + f.getCodigoFactura(),
+                        "Factura Venta",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                }
+
+            } catch (Exception e) {
+            }finally{
+
+                if (con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jbPreordenarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -366,7 +408,14 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
                 "El código debe tener valores válidos",
-                "Ingresar",
+                "Factura Venta",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (jcmbEstado.getSelectedItem().toString().equalsIgnoreCase("seleccione un estado")) {
+            JOptionPane.showMessageDialog(this,
+                "Debe seleccionar un estado válido",
+                "Factura Venta",
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
