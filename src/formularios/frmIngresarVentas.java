@@ -6,12 +6,16 @@
 package formularios;
 
 import Entidades.FacturaVentacCab;
+import Entidades.FacturaVentasDet;
+import Entidades.Productos;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -121,6 +125,11 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         });
 
         jbActualizar.setText("ACTUALIZAR");
+        jbActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbActualizarActionPerformed(evt);
+            }
+        });
 
         jlSubtotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jlSubtotal.setText("$ -");
@@ -331,6 +340,58 @@ public class frmIngresarVentas extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jbPreordenarActionPerformed
+
+    private void jbActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbActualizarActionPerformed
+        PreparedStatement st = null;
+        ResultSet rs=null;
+        try {
+            FacturaVentasDet f = new FacturaVentasDet(tfCodigo.getText());
+            con = Conexion.Conexion.conectar();
+            ArrayList<FacturaVentasDet> resultado= new ArrayList<>();
+            
+            st = con.prepareStatement("select * from ventasdetalle where codigofactura = ?");
+            st.setString(1, f.getCodigoFactura());
+
+            rs = st.executeQuery();
+            
+            while (rs.next()) {                
+                resultado.add(new FacturaVentasDet(rs.getString("codigofactura"), Integer.parseInt(rs.getString("cantidad")), rs.getString("codigoproducto")));
+            }
+
+            DefaultTableModel dtm = (DefaultTableModel) jResultados.getModel();
+            dtm.setRowCount(0);
+            ArrayList<Object> fila;
+            for (FacturaVentasDet p:resultado) {
+                fila = new ArrayList<>();
+                fila.add(p.getCodigoFactura());
+                fila.add(p.getCodigoProducto());
+                fila.add(p.getCantidad());
+                fila.add(p.getCostoUnitario());
+                fila.add(p.getCantidad());
+                fila.add(p.getPrecio());
+                fila.add(p.getIva());
+                dtm.addRow(fila.toArray());
+            }
+        } catch (Exception e) {
+        }finally{
+
+            if (con!=null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (st!=null) {
+                try{
+                    st.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_jbActualizarActionPerformed
 
     /**
      * @param args the command line arguments

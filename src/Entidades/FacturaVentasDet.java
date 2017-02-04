@@ -22,6 +22,10 @@ public class FacturaVentasDet {
         this.codigoProducto = codigoProducto;
     }
 
+    public FacturaVentasDet(String codigoFactura) {
+        this.codigoFactura = codigoFactura;
+    }
+
     public String getCodigoFactura() {
         return codigoFactura;
     }
