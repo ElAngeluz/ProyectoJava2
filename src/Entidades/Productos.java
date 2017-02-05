@@ -17,10 +17,10 @@ public class Productos {
     private String marca;
     private Date fecha_Caducidad;
     private int cantidad;
-    private String precio;
-    private String iva;
+    private double precio;
+    private double iva;
 
-    public Productos(int codigo, String nombre, String marca, Date fecha_Caducidad, int cantidad, String precio, String iva) {
+    public Productos(int codigo, String nombre, String marca, Date fecha_Caducidad, int cantidad, double precio, double iva) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.marca = marca;
@@ -30,19 +30,26 @@ public class Productos {
         this.iva = iva;
     }
 
-    public String getPrecio() {
+    public Productos(int codigo, int cantidad, double precio, double iva) {
+        this.codigo = codigo;
+        this.cantidad = cantidad;
+        this.precio = precio;
+        this.iva = iva;
+    }
+
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(String precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
-    public String getIva() {
+    public double getIva() {
         return iva;
     }
 
-    public void setIva(String iva) {
+    public void setIva(double iva) {
         this.iva = iva;
     }
         

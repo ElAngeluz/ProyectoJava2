@@ -260,25 +260,20 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
     }
     
     private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
-        if (seleccionEdicionValida()) {
-            ArrayList<Productos> eliminados= new ArrayList<>();
-            for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
-                eliminados.add(p);
-            }
+        if (seleccionEdicionValida()) {            
+            
             PreparedStatement st=null;
             try{
                 con = Conexion.Conexion.conectar();
-                for (int i = 0; i < eliminados.size(); i++) {
+                
+                st = con.prepareStatement("Update ventascabecera set estado='anulada' WHERE codigo = ?");
+                st.setString(1, String.valueOf(tResultado.getValueAt(tResultado.getSelectedRow(),0)));
+                st.executeUpdate();
 
-                    st = con.prepareStatement("DELETE FROM productos WHERE codigo = ?");
-                    st.setInt(1, eliminados.get(i).getCodigo());
-                    st.executeUpdate();
-                    
-                    //TODO: regreso de productos del inventario 
+                //TODO: r 
 
-                    System.out.println("Anulacion de factura con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
-                }
+                System.out.println("Anulacion de factura con código: " + tResultado.getValueAt(tResultado.getSelectedRow(),0) + " fue exitosa");
+                
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al anular la factuea en la base de datos",
@@ -332,8 +327,8 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                     p.setMarca(rs.getString("marca"));
                     p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
                     p.setCantidad(rs.getInt("cantidad"));
-                    p.setPrecio(rs.getString("precio"));
-                    p.setIva(rs.getString("iva"));
+                    p.setPrecio(rs.getDouble("precio"));
+                    p.setIva(rs.getDouble("iva"));
                 }
 
                 FrmIngresoProducto frm = new FrmIngresoProducto(p);

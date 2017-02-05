@@ -204,7 +204,10 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                 while(rs.next())
                 {
                     resultado.add(new Productos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("marca"),
-                            rs.getDate("fecha_caducidad"),rs.getInt("cantidad"), rs.getString("precio"), rs.getString("iva")));                    
+                            rs.getDate("fecha_caducidad"),
+                            rs.getInt("cantidad"),
+                            rs.getDouble("precio"),
+                            rs.getDouble("iva")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
@@ -300,8 +303,8 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
                     p.setMarca(rs.getString("marca"));
                     p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
                     p.setCantidad(rs.getInt("cantidad"));
-                    p.setPrecio(rs.getString("precio"));                                        
-                    p.setIva(rs.getString("iva"));
+                    p.setPrecio(rs.getDouble("precio"));                                        
+                    p.setIva(rs.getDouble("iva"));
                 }
                 
                 FrmIngresoProducto frm = new FrmIngresoProducto(p);
@@ -342,7 +345,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         if(!(tResultado.getSelectedRowCount() >=1)){
             JOptionPane.showMessageDialog(this,
                     "Debe seleccionar al menos un registro a editar o eliminar",
-                    "Eliminar",
+                    "Productos",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }        

@@ -31,6 +31,10 @@ public class frmIngresarVentas extends javax.swing.JFrame {
      * Creates new form frmIngresarVentas
      */
     private boolean editar = false;
+    ArrayList<Productos> Productos= null;
+    double _subtotal;
+    double _iva;
+    double _total;
     
     public frmIngresarVentas() {
         initComponents();
@@ -68,6 +72,7 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         jlSubtotal = new javax.swing.JLabel();
         jlIva = new javax.swing.JLabel();
         jlTotal = new javax.swing.JLabel();
+        jbElimnarProd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -140,6 +145,13 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         jlTotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jlTotal.setText("$ -");
 
+        jbElimnarProd.setText("Eliminar");
+        jbElimnarProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbElimnarProdActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,12 +164,9 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                 .addGap(68, 68, 68)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jbActualizar))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(bIngresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bLimpiar))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,7 +191,11 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                             .addComponent(jlSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlIva, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jbElimnarProd)
+                        .addGap(250, 250, 250)
+                        .addComponent(jbActualizar)))
                 .addGap(69, 69, 69))
         );
         layout.setVerticalGroup(
@@ -208,9 +221,11 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                 .addComponent(jbPreordenar)
                 .addGap(18, 18, 18)
                 .addComponent(jSProductos, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jbActualizar)
-                .addGap(27, 27, 27)
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbElimnarProd)
+                    .addComponent(jbActualizar))
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jlSubtotal))
@@ -297,29 +312,24 @@ public class frmIngresarVentas extends javax.swing.JFrame {
             try {
                 FacturaVentacCab f = new FacturaVentacCab(jcmbEstado.getSelectedItem().toString(), tfCodigo.getText(), Date.valueOf(todayLocalDate),tfCliente.getText());
                 con = Conexion.Conexion.conectar();
-                
-                if (editar) {
-                    
+                                
+                st = con.prepareStatement("INSERT INTO ventascabecera(idventas,codigo,idcliente,fecha,estado) VALUES(null,?,?,?,?) ");
+                st.setString(1, f.getCodigoFactura());
+                st.setString(2, f.getIdCliente());                    
+                st.setDate(3, Date.valueOf(todayLocalDate));
+                st.setString(4, f.getEstado());
 
-                }else{
-                    st = con.prepareStatement("INSERT INTO ventascabecera(idventas,codigo,idcliente,fecha,estado) VALUES(null,?,?,?,?) ");
-                    st.setString(1, f.getCodigoFactura());
-                    st.setString(2, f.getIdCliente());                    
-                    st.setDate(3, Date.valueOf(todayLocalDate));
-                    st.setString(4, f.getEstado());
+                st.executeUpdate();
 
-                    st.executeUpdate();
+                System.out.println("Ingreso de preventa exitoso");
 
-                    System.out.println("Ingreso de preventa exitoso");
-                    
-                    JOptionPane.showMessageDialog(this,
-                        "ingrese este codigo de venta en la aplicación del telfono: " + f.getCodigoFactura(),
-                        "Factura Venta",
-                        JOptionPane.INFORMATION_MESSAGE);
-
-                }
+                JOptionPane.showMessageDialog(this,
+                    "Ingrese este codigo de venta en la aplicación del telefono: " + f.getCodigoFactura(),
+                    "Factura Venta",
+                    JOptionPane.INFORMATION_MESSAGE);
 
             } catch (Exception e) {
+                System.out.println("Problema en la base al pre-ordenar");
             }finally{
 
                 if (con!=null) {
@@ -344,34 +354,69 @@ public class frmIngresarVentas extends javax.swing.JFrame {
     private void jbActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbActualizarActionPerformed
         PreparedStatement st = null;
         ResultSet rs=null;
+        Productos= new ArrayList<>();
         try {
-            FacturaVentasDet f = new FacturaVentasDet(tfCodigo.getText());
             con = Conexion.Conexion.conectar();
             ArrayList<FacturaVentasDet> resultado= new ArrayList<>();
             
-            st = con.prepareStatement("select * from ventasdetalle where codigofactura = ?");
-            st.setString(1, f.getCodigoFactura());
+            st = con.prepareStatement("select codigoproducto, cantidad from ventasdetalle where codigofactura = ?");
+            st.setString(1, tfCodigo.getText());
 
             rs = st.executeQuery();
             
             while (rs.next()) {                
-                resultado.add(new FacturaVentasDet(rs.getString("codigofactura"), Integer.parseInt(rs.getString("cantidad")), rs.getString("codigoproducto")));
+                resultado.add(new FacturaVentasDet(null,Integer.parseInt(rs.getString("cantidad")), rs.getString("codigoproducto")));
             }
+            
+            for (int i = 0; i < resultado.size(); i++) {
+                st = null;
+                rs = null;
+                st = con.prepareStatement("select codigo,cantidad, precio, iva cantidad from productos where codigo = ?");
+                st.setString(1, resultado.get(i).getCodigoProducto());  
+                rs = st.executeQuery();
+                while(rs.next()){
+                    Productos.add(new Productos(Integer.parseInt(rs.getString("codigo")), Integer.parseInt(rs.getString("cantidad"))
+                            , Double.parseDouble(rs.getString("precio")), Double.parseDouble(rs.getString("iva"))));
+                }
+            }
+            
+            _subtotal =0;
+            _iva = 0;
+            //recorre los lista de productos: asigna y calcula el volor total de cada prodcuto de la venta
+            for (int i = 0; i < Productos.size(); i++) {
+                for (int j = 0; j < resultado.size(); j++) {                    
+                    if (String.valueOf(Productos.get(i).getCodigo()) == null ? resultado.get(j).getCodigoProducto() == null : 
+                            String.valueOf(Productos.get(i).getCodigo()).equals(resultado.get(j).getCodigoProducto())) {
+                        
+                        resultado.get(j).setCostoUnitario(Productos.get(i).getPrecio());
+                        
+                        resultado.get(j).setTotal(Productos.get(i).getPrecio() * resultado.get(j).getCantidad() );
+                        
+                        _subtotal += resultado.get(j).getTotal();
+                        
+                        _iva += (resultado.get(j).getTotal() * Productos.get(i).getIva());
+                    }                    
+                }                
+            }
+            
+            _total = _subtotal + _iva;
 
             DefaultTableModel dtm = (DefaultTableModel) jResultados.getModel();
             dtm.setRowCount(0);
             ArrayList<Object> fila;
             for (FacturaVentasDet p:resultado) {
                 fila = new ArrayList<>();
-                fila.add(p.getCodigoFactura());
                 fila.add(p.getCodigoProducto());
                 fila.add(p.getCantidad());
                 fila.add(p.getCostoUnitario());
-                fila.add(p.getCantidad());
-                fila.add(p.getPrecio());
-                fila.add(p.getIva());
+                fila.add(p.getTotal());
                 dtm.addRow(fila.toArray());
             }
+            
+            jlIva.setText(String.valueOf(_iva));
+            jlSubtotal.setText(String.valueOf(_subtotal));
+            jlTotal.setText(String.valueOf(_total));
+            
         } catch (Exception e) {
         }finally{
 
@@ -393,6 +438,27 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jbActualizarActionPerformed
 
+    private void jbElimnarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbElimnarProdActionPerformed
+        if (seleccionEdicionValida()) {
+            
+        }
+    }//GEN-LAST:event_jbElimnarProdActionPerformed
+
+    /**
+     * 
+     * @return
+     */
+    public boolean seleccionEdicionValida(){        
+        if(!(jResultados.getSelectedRowCount() >=1)){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar al menos un registro a editar o eliminar",
+                    "Ventas",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
+        return true;    
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -432,6 +498,7 @@ public class frmIngresarVentas extends javax.swing.JFrame {
     private javax.swing.JTable jResultados;
     private javax.swing.JScrollPane jSProductos;
     private javax.swing.JButton jbActualizar;
+    private javax.swing.JButton jbElimnarProd;
     private javax.swing.JButton jbPreordenar;
     private javax.swing.JComboBox<String> jcmbEstado;
     private javax.swing.JLabel jlIva;
@@ -480,6 +547,58 @@ public class frmIngresarVentas extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        return true;
+        return facturaValido(tfCodigo.getText());
+    }
+    
+    private boolean facturaValido(String _codigo) {      
+        
+        ResultSet rs=null;                       
+        PreparedStatement st=null;
+        try
+        {   
+            con = Conexion.Conexion.conectar();
+            st = con.prepareStatement("SELECT * FROM ventascabecera WHERE codigo = ?");            
+            st.setString(1,_codigo);    
+            rs = st.executeQuery(); 
+            if(rs.next()){
+                JOptionPane.showMessageDialog(this,
+                    "Existe una con el mismo código",
+                    "Facturacion",
+                    JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            return true;
+        }        
+        catch(Exception e){
+                JOptionPane.showMessageDialog(this,
+                    "Error en la consulta de factura. (Validación) \n" + e,
+                    "Facturacion ",
+                    JOptionPane.ERROR_MESSAGE);          
+            return false;
+        } finally{
+            if ( con!=null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (st!=null) {
+                try{
+                    st.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (rs!= null) {
+                try{
+                    rs.close();
+                }catch (SQLException ex) {
+                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
     }
 }

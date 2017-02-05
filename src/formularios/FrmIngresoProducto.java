@@ -202,7 +202,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
 
                 Productos p = new Productos(Integer.parseInt(tfCodigo.getText()), tfNombre.getText(), 
-                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()), tfPrecio.getText(), tfIva.getText());
+                    tfMarca.getText(), Date.valueOf(todayLocalDate), Integer.parseInt(tfCantidad.getText()), 
+                        Double.parseDouble(tfPrecio.getText()), Double.parseDouble(tfIva.getText()));
 
                 con = Conexion.Conexion.conectar();
                 if (editar) {
@@ -211,8 +212,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                     st.setString(2, p.getMarca());
                     st.setDate(3, Date.valueOf(todayLocalDate));
                     st.setInt(4, p.getCantidad());
-                    st.setString(5, p.getPrecio());
-                    st.setString(6, p.getIva());
+                    st.setString(5, String.valueOf(p.getPrecio()));
+                    st.setString(6, String.valueOf(p.getIva()));
                     st.setInt(7, p.getCodigo());
                     
                     st.executeUpdate();
@@ -226,8 +227,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                     st.setString(3, p.getMarca());
                     st.setDate(4, Date.valueOf(todayLocalDate));
                     st.setInt(5, p.getCantidad());
-                    st.setString(6, p.getPrecio());
-                    st.setString(7, p.getIva());
+                    st.setString(6, String.valueOf(p.getPrecio()));
+                    st.setString(7, String.valueOf(p.getIva()));
                     
                     st.executeUpdate();
 
@@ -332,8 +333,8 @@ public class FrmIngresoProducto extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        try {
-            Integer.parseInt(tfPrecio.getText());            
+        try {            
+            Double.valueOf(tfPrecio.getText());            
         } catch (NumberFormatException e) {
              JOptionPane.showMessageDialog(this,
                 "El precio debe tener valores válidos",
