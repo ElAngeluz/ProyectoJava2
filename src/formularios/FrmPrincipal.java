@@ -47,7 +47,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
         miProductos = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jmFacturas = new javax.swing.JMenu();
-        jmCompras = new javax.swing.JMenuItem();
         jmVentas = new javax.swing.JMenuItem();
         jmReportes = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -88,6 +87,11 @@ public class FrmPrincipal extends javax.swing.JFrame {
         mMantenimiento.setText("MANTENIMIENTO");
 
         jMenuItem4.setText("Clientes");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         mMantenimiento.add(jMenuItem4);
 
         miProductos.setText("Productos");
@@ -107,9 +111,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 jmFacturasActionPerformed(evt);
             }
         });
-
-        jmCompras.setText("Compras");
-        jmFacturas.add(jmCompras);
 
         jmVentas.setText("Ventas");
         jmVentas.addActionListener(new java.awt.event.ActionListener() {
@@ -210,13 +211,18 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void jmFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmFacturasActionPerformed
-        
+
     }//GEN-LAST:event_jmFacturasActionPerformed
 
     private void jmVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmVentasActionPerformed
         frmMantenimientoFactura frm = new frmMantenimientoFactura();
         frm.setVisible(true);
     }//GEN-LAST:event_jmVentasActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        FrmMantenimientoCliente frm = new FrmMantenimientoCliente();
+        frm.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -253,7 +259,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jmCompras;
     private javax.swing.JMenu jmFacturas;
     private javax.swing.JMenu jmReportes;
     private javax.swing.JMenuItem jmVentas;
