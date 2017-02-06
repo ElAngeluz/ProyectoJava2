@@ -6,7 +6,6 @@
 package formularios;
 
 import Entidades.FacturaVentacCab;
-import Entidades.Productos;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -149,15 +148,13 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
         suca();
-    }//GEN-LAST:event_cbTipoActionPerformed
+    }//GEN-LAST:event_cbTipoActionPerforme
 
     private void tfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescripcionActionPerformed
-        // TODO add your handling code here:
         suca();
     }//GEN-LAST:event_tfDescripcionActionPerformed
 
     private void bConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConsultarActionPerformed
-        // TODO add your handling code here:
         consultarRegistros();
     }//GEN-LAST:event_bConsultarActionPerformed
 
@@ -173,16 +170,16 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                 con = Conexion.Conexion.conectar(); 
                                    
                 if(tipo.equalsIgnoreCase("Todos")){
-                    st = con.prepareStatement("SELECT * FROM ventascabecera");            
+                    st = con.prepareStatement("SELECT * FROM ventascabecera ");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("codigo")){
                     //st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
-                    st = con.prepareStatement("SELECT * FROM productos WHERE codigo like ? ");    
+                    st = con.prepareStatement("SELECT * FROM ventascabecera WHERE estado = 'efectiva' and idcliente like ? ");    
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }else{
-                    st = con.prepareStatement("SELECT * FROM productos WHERE estado = ?");                            
-                    st.setString(1, String.valueOf(tfDescripcion.getText().toLowerCase()));                    
+                    st = con.prepareStatement("SELECT * FROM ventascabecera WHERE estado like ?");                            
+                    st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");                    
                     rs = st.executeQuery();
                 }
                 
@@ -302,7 +299,7 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
         if(!(tResultado.getSelectedRowCount() >=1)){
             JOptionPane.showMessageDialog(this,
                     "Debe seleccionar al menos un registro a editar o eliminar",
-                    "Eliminar",
+                    "Facturacion",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }        
@@ -312,31 +309,27 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){
-            Productos p = new Productos((int) tResultado.getValueAt(tResultado.getSelectedRow(), 0));
+            FacturaVentacCab f= null;
             ResultSet rs=null;
             PreparedStatement st=null;
             try {
                 con = Conexion.Conexion.conectar();
 
-                st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) = ?");
-                st.setString(1, String.valueOf(p.getCodigo()));
+                st = con.prepareStatement("SELECT * FROM ventascabecera WHERE codigo = ?");
+                st.setString(1, String.valueOf(tResultado.getValueAt(tResultado.getSelectedRows()[0],0)));
                 rs = st.executeQuery();
-
-                while (rs.next()) {
-                    p.setNombre(rs.getString("nombre"));
-                    p.setMarca(rs.getString("marca"));
-                    p.setFecha_Caducidad(rs.getDate("fecha_caducidad"));
-                    p.setCantidad(rs.getInt("cantidad"));
-                    p.setPrecio(rs.getDouble("precio"));
-                    p.setIva(rs.getDouble("iva"));
+                
+                while (rs.next()) {                    
+                    f= new FacturaVentacCab(rs.getString("estado"), rs.getString("codigo"), rs.getString("idcliente"),rs.getDate("fecha") 
+                            , rs.getDouble("iva"), rs.getDouble("subtotal"), rs.getDouble("total"));
                 }
-
-                FrmIngresoProducto frm = new FrmIngresoProducto(p);
+                
+                frmIngresarVentas frm  = new frmIngresarVentas(f);
                 frm.setVisible(true);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al intentar consultar el producto en la base de datos. "+ e,
+                    "Ocurrió un error al intentar consultar la factura en la base de datos. "+ e,
                     "Editar",
                     JOptionPane.ERROR_MESSAGE);
             }finally{

@@ -43,6 +43,20 @@ public class frmIngresarVentas extends javax.swing.JFrame {
     
     private Connection con;
 
+    frmIngresarVentas(FacturaVentacCab f) {
+        initComponents();
+        tfCodigo.setText(f.getCodigoFactura());
+        tfCliente.setText(f.getIdCliente());
+        jcmbEstado.setSelectedItem(f.getEstado());
+        tfFecha.setText(f.getFecha().toString());
+        jlIva.setText(String.valueOf(f.getIva()));
+        jlSubtotal.setText(String.valueOf(f.getSubtotal()));
+        jlTotal.setText(String.valueOf(f.getTotal()));
+        
+        tfCodigo.setEditable(false);
+        tfCliente.setEditable(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
