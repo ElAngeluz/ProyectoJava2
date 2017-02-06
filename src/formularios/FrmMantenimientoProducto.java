@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -356,7 +355,7 @@ public class FrmMantenimientoProducto extends javax.swing.JFrame {
         if (seleccionEdicionValida()) {
             ArrayList<Productos> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Productos p = new Productos((int)tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                Productos p = new Productos(Integer.parseInt(tResultado.getValueAt(tResultado.getSelectedRows()[i],0).toString()));
                 eliminados.add(p);                
             }
             PreparedStatement st=null; 

@@ -373,19 +373,18 @@ public class frmIngresarVentas extends javax.swing.JFrame {
             con = Conexion.Conexion.conectar();
             ArrayList<FacturaVentasDet> resultado= new ArrayList<>();
             
-            st = con.prepareStatement("select codigoproducto, cantidad from ventasdetalle where codigofactura = ?");
+            st = con.prepareStatement("select cantidad, codigoproducto from ventasdetalle where codigofactura = ?");
             st.setString(1, tfCodigo.getText());
 
             rs = st.executeQuery();
             
             while (rs.next()) {                
-                resultado.add(new FacturaVentasDet(null,Integer.parseInt(rs.getString("cantidad")), rs.getString("codigoproducto")));
+                resultado.add(new FacturaVentasDet(tfCodigo.getText(),Integer.parseInt(rs.getString("cantidad")), rs.getString("codigoproducto")));
             }
             
             for (int i = 0; i < resultado.size(); i++) {
                 st = null;
-                rs = null;
-                st = con.prepareStatement("select codigo,cantidad, precio, iva cantidad from productos where codigo = ?");
+                st = con.prepareStatement("select codigo,cantidad, precio, iva from productos where convert(codigo, char character set utf8) = ?");
                 st.setString(1, resultado.get(i).getCodigoProducto());  
                 rs = st.executeQuery();
                 while(rs.next()){
@@ -454,7 +453,44 @@ public class frmIngresarVentas extends javax.swing.JFrame {
 
     private void jbElimnarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbElimnarProdActionPerformed
         if (seleccionEdicionValida()) {
+            ArrayList<Productos> eliminados= new ArrayList<>(); 
+            for (int i = 0; i < jResultados.getSelectedRows().length; i++) {
+                Productos p = new Productos(Integer.parseInt(jResultados.getValueAt(jResultados.getSelectedRows()[i],0).toString()));
+                eliminados.add(p);                
+            }
+            PreparedStatement st=null; 
             
+            try{           
+                con = Conexion.Conexion.conectar();
+                for (int i = 0; i < eliminados.size(); i++) { 
+                                       
+                    st = con.prepareStatement("DELETE FROM ventasdetalle WHERE codigoproducto = ?");            
+                    st.setInt(1, eliminados.get(i).getCodigo());
+                    st.executeUpdate();                    
+                    
+                    System.out.println("Eliminacion de productos con código: " + eliminados.get(i).getCodigo() + " fue exitosa");
+                }
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this,
+                    "Ocurrió un error al eliminar el producto en la base de datos",
+                    "Eliminación",
+                    JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
         }
     }//GEN-LAST:event_jbElimnarProdActionPerformed
 
