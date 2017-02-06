@@ -78,7 +78,7 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
         ));
         spResultado.setViewportView(jTable1);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "CEDULA" }));
         cbTipo.setToolTipText("");
@@ -203,13 +203,13 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         if(seleccionEdicionValida()){            
-            Cliente c = new Cliente((int) tResultado.getValueAt(tResultado.getSelectedRow(), 0));
+            Cliente c = new Cliente(tResultado.getValueAt(tResultado.getSelectedRow(), 0).toString());
             ResultSet rs=null; 
             PreparedStatement st=null;
             try {
                 con = Conexion.Conexion.conectar();   
                 
-                st = con.prepareStatement("SELECT * FROM cliente WHERE convert(id, char character set utf8) = ?");
+                st = con.prepareStatement("SELECT * FROM cliente WHERE convert(codigo, char character set utf8) = ?");
                 st.setString(1, String.valueOf(c.getId()));
                 rs = st.executeQuery();
                 
@@ -276,7 +276,7 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
         if (seleccionEdicionValida()) {
             ArrayList<Cliente> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Cliente c = new Cliente((int) tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                Cliente c = new Cliente(tResultado.getValueAt(tResultado.getSelectedRows()[i],0).toString());
                 eliminados.add(c);                
             }
             PreparedStatement st=null; 
@@ -285,7 +285,7 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 for (int i = 0; i < eliminados.size(); i++) { 
                                        
                     st = con.prepareStatement("DELETE FROM cliente WHERE id = ?");            
-                    st.setInt(1, eliminados.get(i).getId());
+                    st.setString(1, eliminados.get(i).getId());
                     st.executeUpdate();                    
                     
                     System.out.println("Eliminacion de cliente con cedula: " + eliminados.get(i).getId() + " fue exitosa");
@@ -352,7 +352,7 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                     st = con.prepareStatement("SELECT * FROM cliente");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("id")){
-                    st = con.prepareStatement("SELECT * FROM cliente WHERE convert(id, char character set utf8) like ? ");            
+                    st = con.prepareStatement("SELECT * FROM cliente WHERE codigo like ? ");            
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }
@@ -360,7 +360,7 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    resultado.add(new Cliente (rs.getInt("id"),rs.getString("nombre"),rs.getString("apellido"),rs.getString("direccion"),rs.getString("telfono")));                    
+                    resultado.add(new Cliente (rs.getString("codigo"),rs.getString("nombre"),rs.getString("apellido"),rs.getString("direccion"),rs.getString("telefono")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
@@ -438,11 +438,8 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new FrmMantenimientoCliente().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrmMantenimientoCliente().setVisible(true);
         });
     }
 

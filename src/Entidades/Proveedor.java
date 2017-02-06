@@ -10,36 +10,36 @@ package Entidades;
  * @author Johanna Parrales
  */
 public class Proveedor {
-    private int id;
+    private String codigo;
     private String nombre;
     private String producto;
     private String direccion;
     private String telefono;
 
-    public Proveedor(int id, String nombre, String producto, String direccion, String telefono) {
-        this.id = id;
+    public Proveedor(String id, String nombre, String producto, String direccion, String telefono) {
+        this.codigo = id;
         this.nombre = nombre;
         this.producto = producto;
         this.direccion = direccion;
         this.telefono = telefono;
-    }
+    }    
 
-    public Proveedor(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
+    public Proveedor(String codigo) {
+        this.codigo = codigo;
     }
 
     /**
-     * @param id the id to set
+     * @return the codigo
      */
-    public void setId(int id) {
-        this.id = id;
+    public String getId() {
+        return codigo;
+    }
+
+    /**
+     * @param id the codigo to set
+     */
+    public void setId(String id) {
+        this.codigo = id;
     }
 
     /**

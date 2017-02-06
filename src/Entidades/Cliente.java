@@ -10,36 +10,36 @@ package Entidades;
  * @author Johanna Parrales
  */
 public class Cliente {
-    private int id;
+    private String codigo;
     private String nombre;
     private String apellido;
     private String direccion;
     private String telefono;
 
-    public Cliente(int id, String nombre, String apellido, String direccion, String telefono) {
-        this.id = id;
+    public Cliente(String id, String nombre, String apellido, String direccion, String telefono) {
+        this.codigo = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.direccion = direccion;
         this.telefono = telefono;
     }
 
-    public Cliente(int id) {
-        this.id = id;
+    public Cliente(String id) {
+        this.codigo = id;
     }
 
      /**
-     * @return the id
+     * @return the codigo
      */
-    public int getId() {
-        return id;
+    public String getId() {
+        return codigo;
     }
 
     /**
-     * @param id the id to set
+     * @param id the codigo to set
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setId(String id) {
+        this.codigo = id;
     }
 
     /**

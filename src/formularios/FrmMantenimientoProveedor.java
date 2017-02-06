@@ -58,7 +58,7 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
         bEditar = new javax.swing.JButton();
         bEliminasr = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         cbTodos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "ID", "NOMBRE", " " }));
         cbTodos.addActionListener(new java.awt.event.ActionListener() {
@@ -82,13 +82,10 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
 
         tResultado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "ID", "NOMBRE", "PRODUCTO", "DIRECCION", "TELEFONO"
+                "CODIGO", "NOMBRE", "PRODUCTO", "DIRECCION", "TELEFONO"
             }
         ));
         jScrollPane1.setViewportView(tResultado);
@@ -120,25 +117,22 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(bIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(bEliminasr, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(cbTodos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(bConsultar)
-                            .addGap(21, 21, 21)))))
+                        .addComponent(bIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(bEliminasr, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cbTodos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bConsultar)))
+                .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,7 +149,7 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
                     .addComponent(bIngresar)
                     .addComponent(bEditar)
                     .addComponent(bEliminasr))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         pack();
@@ -179,13 +173,13 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
         if(seleccionEdicionValida()){            
-            Proveedor p = new Proveedor((int) tResultado.getValueAt(tResultado.getSelectedRow(), 0));
+            Proveedor p = new Proveedor(tResultado.getValueAt(tResultado.getSelectedRow(),0).toString());
             ResultSet rs=null; 
             PreparedStatement st=null;
             try {
                 con = Conexion.Conexion.conectar();   
                 
-                st = con.prepareStatement("SELECT * FROM proveedor WHERE convert(id, char character set utf8) = ?");
+                st = con.prepareStatement("SELECT * FROM proveedor WHERE codigo = ?");
                 st.setString(1, String.valueOf(p.getId()));
                 rs = st.executeQuery();
                 
@@ -242,7 +236,7 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
         if (seleccionEdicionValida()) {
             ArrayList<Proveedor> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Proveedor p = new Proveedor((int) tResultado.getValueAt(tResultado.getSelectedRows()[i],0));
+                Proveedor p = new Proveedor(tResultado.getValueAt(tResultado.getSelectedRows()[i],0).toString());
                 eliminados.add(p);                
             }
             PreparedStatement st=null; 
@@ -250,8 +244,8 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
                 con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) { 
                                        
-                    st = con.prepareStatement("DELETE FROM proveedor WHERE id = ?");            
-                    st.setInt(1, eliminados.get(i).getId());
+                    st = con.prepareStatement("DELETE FROM proveedor WHERE codigo = ?");            
+                    st.setString(1, eliminados.get(i).getId());
                     st.executeUpdate();                    
                     
                     System.out.println("Eliminacion de proveedor con cedula: " + eliminados.get(i).getId() + " fue exitosa");
@@ -317,7 +311,7 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
                     st = con.prepareStatement("SELECT * FROM proveedor");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("id")){
-                    st = con.prepareStatement("SELECT * FROM proveedor WHERE convert(id, char character set utf8) like ? ");            
+                    st = con.prepareStatement("SELECT * FROM proveedor WHERE convert(codigo, char character set utf8) like ? ");            
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }
@@ -325,7 +319,7 @@ public class FrmMantenimientoProveedor extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    resultado.add(new Proveedor (rs.getInt("id"),rs.getString("nombre"),rs.getString("producto"),rs.getString("direccion"),rs.getString("telfono")));                    
+                    resultado.add(new Proveedor (rs.getString("codigo"),rs.getString("nombre"),rs.getString("producto"),rs.getString("direccion"),rs.getString("telefono")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();

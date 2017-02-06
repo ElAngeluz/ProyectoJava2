@@ -5,7 +5,6 @@
  */
 package formularios;
 
-import Entidades.Cliente;
 import Entidades.Proveedor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,7 +77,7 @@ public class FrmIngresoProveedor extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel2.setText("ID");
 
@@ -205,7 +204,7 @@ public class FrmIngresoProveedor extends javax.swing.JFrame {
             try
             {   
                 con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("SELECT * FROM proveedor WHERE id = ?");            
+                st = con.prepareStatement("SELECT * FROM proveedor WHERE codigo = ?");            
                 st.setString(1,_id);    
                 rs = st.executeQuery(); 
                 if(rs.next()){
@@ -220,7 +219,7 @@ public class FrmIngresoProveedor extends javax.swing.JFrame {
             catch(Exception e){
                     JOptionPane.showMessageDialog(this,
                         "Error en la consulta de provedor. (Validacion) \n" + e,
-                        "Ingresar",
+                        "Proveedor",
                         JOptionPane.ERROR_MESSAGE);          
                 return false;
             } finally{
@@ -258,25 +257,25 @@ public class FrmIngresoProveedor extends javax.swing.JFrame {
                 LocalDate todayLocalDate;
                 todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
 
-                Proveedor p = new Proveedor(Integer.parseInt(tfId.getText()), tfNombre.getText(), 
+                Proveedor p = new Proveedor(tfId.getText(), tfNombre.getText(), 
                     tfProducto.getText(), tfDireccion.getText(),tfTelefono.getText());
 
                 con = Conexion.Conexion.conectar();
                 if (editar) {
-                    st = con.prepareStatement("UPDATE proveedor set nombre=?, producto = ?, direccion=?, telefono=?  WHERE id = ?");  
+                    st = con.prepareStatement("UPDATE proveedor set nombre=?, producto = ?, direccion=?, telefono=?  WHERE codigo = ?");  
                     st.setString(1, p.getNombre());
                     st.setString(2, p.getProducto());
-                    st.setString(4, p.getDireccion());
-                    st.setString(5,p.getTelefono());
-                    st.setInt(6, p.getId());
+                    st.setString(3, p.getDireccion());
+                    st.setString(4, p.getTelefono());
+                    st.setString(5, p.getId());
                     
                     st.executeUpdate();
                     
                     System.out.println("Actualización de proveedor exitosa");                    
                     
                 }else{                    
-                    st = con.prepareStatement("INSERT INTO proveedor(id,nombre,producto,direccion,telefono) VALUES(null,?,?,?,?,?) ");
-                    st.setInt(1, p.getId());
+                    st = con.prepareStatement("INSERT INTO proveedor(idproveedor,codigo,nombre,producto,direccion,telefono) VALUES(null,?,?,?,?,?) ");
+                    st.setString(1, p.getId());
                     st.setString(2, p.getNombre());
                     st.setString(3, p.getProducto());
                     st.setString(4, p.getDireccion());
