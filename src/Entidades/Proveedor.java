@@ -9,26 +9,26 @@ package Entidades;
  *
  * @author Johanna Parrales
  */
-public class Cliente {
+public class Proveedor {
     private String codigo;
     private String nombre;
-    private String apellido;
+    private String producto;
     private String direccion;
     private String telefono;
 
-    public Cliente(String id, String nombre, String apellido, String direccion, String telefono) {
+    public Proveedor(String id, String nombre, String producto, String direccion, String telefono) {
         this.codigo = id;
         this.nombre = nombre;
-        this.apellido = apellido;
+        this.producto = producto;
         this.direccion = direccion;
         this.telefono = telefono;
+    }    
+
+    public Proveedor(String codigo) {
+        this.codigo = codigo;
     }
 
-    public Cliente(String id) {
-        this.codigo = id;
-    }
-
-     /**
+    /**
      * @return the codigo
      */
     public String getId() {
@@ -57,17 +57,17 @@ public class Cliente {
     }
 
     /**
-     * @return the apellido
+     * @return the producto
      */
-    public String getApellido() {
-        return apellido;
+    public String getProducto() {
+        return producto;
     }
 
     /**
-     * @param apellido the apellido to set
+     * @param producto the producto to set
      */
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setProducto(String producto) {
+        this.producto = producto;
     }
 
     /**
@@ -97,6 +97,5 @@ public class Cliente {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-    
-    
-}
+
+    }

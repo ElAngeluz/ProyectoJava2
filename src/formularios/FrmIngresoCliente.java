@@ -80,7 +80,7 @@ public class FrmIngresoCliente extends javax.swing.JFrame {
         bIngresar = new javax.swing.JButton();
         bLIMPIAR = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lCedula.setText("CEDULA");
 
@@ -176,25 +176,25 @@ public class FrmIngresoCliente extends javax.swing.JFrame {
                 LocalDate todayLocalDate;
                 todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
 
-                Cliente c = new Cliente(Integer.parseInt(tfCedula.getText()), tfNombre.getText(), 
+                Cliente c = new Cliente(tfCedula.getText(), tfNombre.getText(), 
                     tfApellido.getText(), tfDireccion.getText(),tfTelefono.getText());
 
                 con = Conexion.Conexion.conectar();
                 if (editar) {
-                    st = con.prepareStatement("UPDATE cliente set nombre=?, apellido = ?, direccion=?, telefono=?  WHERE id = ?");  
+                    st = con.prepareStatement("UPDATE cliente set nombre=?, apellido = ?, direccion=?, telefono=?  WHERE codigo = ?");  
                     st.setString(1, c.getNombre());
                     st.setString(2, c.getApellido());
-                    st.setString(4, c.getDireccion());
-                    st.setString(5,c.getTelefono());
-                    st.setInt(6, c.getId());
+                    st.setString(3, c.getDireccion());
+                    st.setString(4,c.getTelefono());
+                    st.setString(5, c.getId());
                     
                     st.executeUpdate();
                     
                     System.out.println("Actualización de cliente exitosa");                    
                     
                 }else{                    
-                    st = con.prepareStatement("INSERT INTO cliente(id,nombre,apellido,direccion,telefono) VALUES(null,?,?,?,?,?) ");
-                    st.setInt(1, c.getId());
+                    st = con.prepareStatement("INSERT INTO cliente(idclientes, codigo,nombre,apellido,direccion,telefono) VALUES(null,?,?,?,?,?) ");
+                    st.setString(1, c.getId());
                     st.setString(2, c.getNombre());
                     st.setString(3, c.getApellido());
                     st.setString(4, c.getDireccion());
@@ -236,7 +236,7 @@ public class FrmIngresoCliente extends javax.swing.JFrame {
             Integer.parseInt(tfCedula.getText());            
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                "La cedula debe tener valores válidos",
+                "La cédula debe tener valores válidos",
                 "Ingresar",
                 JOptionPane.ERROR_MESSAGE);
             return false;
@@ -264,7 +264,7 @@ public class FrmIngresoCliente extends javax.swing.JFrame {
             try
             {   
                 con = Conexion.Conexion.conectar();
-                st = con.prepareStatement("SELECT * FROM cliente WHERE id = ?");            
+                st = con.prepareStatement("SELECT * FROM cliente WHERE codigo = ?");            
                 st.setString(1,_id);    
                 rs = st.executeQuery(); 
                 if(rs.next()){

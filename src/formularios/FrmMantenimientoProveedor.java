@@ -5,7 +5,7 @@
  */
 package formularios;
 
-import Entidades.Cliente;
+import Entidades.Proveedor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,22 +20,20 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Johanna Parrales
  */
-public class FrmMantenimientoCliente extends javax.swing.JFrame {
+public class FrmMantenimientoProveedor extends javax.swing.JFrame {
 
     /**
-     * Creates new form FrmMantenimientoCliente
+     * Creates new form FrmMantenimientoProveedor
      */
-    public FrmMantenimientoCliente() {
+    public FrmMantenimientoProveedor() {
         initComponents();
         suca();
-               
     }
 
-     /*
-    procedimeinto que cada vez que cambia al tipo de la consulta modifica el campo descripcion
-    */
+    private Connection con;
+    
     private void suca(){
-        if(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("Todos"))
+        if(String.valueOf(cbTodos.getSelectedItem()).equalsIgnoreCase("Todos"))
             tfDescripcion.setEditable(false);
         else
             tfDescripcion.setEditable(true);   
@@ -51,40 +49,21 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        spResultado = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        cbTipo = new javax.swing.JComboBox<>();
+        cbTodos = new javax.swing.JComboBox<>();
         tfDescripcion = new javax.swing.JTextField();
         bConsultar = new javax.swing.JButton();
-        bIngresar = new javax.swing.JButton();
-        bEditar = new javax.swing.JButton();
-        bEliminar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tResultado = new javax.swing.JTable();
-
-        spResultado.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        spResultado.setOpaque(false);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        spResultado.setViewportView(jTable1);
+        bIngresar = new javax.swing.JButton();
+        bEditar = new javax.swing.JButton();
+        bEliminasr = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "CEDULA" }));
-        cbTipo.setToolTipText("");
-        cbTipo.addActionListener(new java.awt.event.ActionListener() {
+        cbTodos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS", "ID", "NOMBRE", " " }));
+        cbTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTipoActionPerformed(evt);
+                cbTodosActionPerformed(evt);
             }
         });
 
@@ -94,12 +73,22 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
             }
         });
 
-        bConsultar.setText("Consultar");
+        bConsultar.setText("CONSULTAR");
         bConsultar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bConsultarActionPerformed(evt);
             }
         });
+
+        tResultado.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "CODIGO", "NOMBRE", "PRODUCTO", "DIRECCION", "TELEFONO"
+            }
+        ));
+        jScrollPane1.setViewportView(tResultado);
 
         bIngresar.setText("INGRESAR");
         bIngresar.addActionListener(new java.awt.event.ActionListener() {
@@ -115,117 +104,98 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
             }
         });
 
-        bEliminar.setText("ELIMINAR");
-        bEliminar.addActionListener(new java.awt.event.ActionListener() {
+        bEliminasr.setText("ELIMINAR");
+        bEliminasr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEliminarActionPerformed(evt);
+                bEliminasrActionPerformed(evt);
             }
         });
-
-        tResultado.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Cedula", "Nombres", "Apellidos", "Direccion", "Telefono"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tResultado);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(bIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(82, 82, 82)
-                            .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(bConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(bEliminasr, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cbTodos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bConsultar)))
+                .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(bConsultar, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(cbTipo)
-                    .addComponent(tfDescripcion))
+                    .addComponent(bConsultar, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                    .addComponent(tfDescripcion)
+                    .addComponent(cbTodos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(bIngresar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(bEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(43, 43, 43))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bIngresar)
+                    .addComponent(bEditar)
+                    .addComponent(bEliminasr))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
+    private void bConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConsultarActionPerformed
+        // TODO add your handling code here:
+        consultarRegistro();
+    }//GEN-LAST:event_bConsultarActionPerformed
 
+    private void cbTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTodosActionPerformed
+        // TODO add your handling code here:
         suca();
-    }//GEN-LAST:event_cbTipoActionPerformed
+    }//GEN-LAST:event_cbTodosActionPerformed
 
     private void tfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescripcionActionPerformed
         // TODO add your handling code here:
         suca();
     }//GEN-LAST:event_tfDescripcionActionPerformed
 
-    private void bConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConsultarActionPerformed
-        // TODO add your handling code here:
-        consultarRegistros();
-    }//GEN-LAST:event_bConsultarActionPerformed
-
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         // TODO add your handling code here:
-        
         if(seleccionEdicionValida()){            
-            Cliente c = new Cliente(tResultado.getValueAt(tResultado.getSelectedRow(), 0).toString());
+            Proveedor p = new Proveedor(tResultado.getValueAt(tResultado.getSelectedRow(),0).toString());
             ResultSet rs=null; 
             PreparedStatement st=null;
             try {
                 con = Conexion.Conexion.conectar();   
                 
-                st = con.prepareStatement("SELECT * FROM cliente WHERE convert(codigo, char character set utf8) = ?");
-                st.setString(1, String.valueOf(c.getId()));
+                st = con.prepareStatement("SELECT * FROM proveedor WHERE codigo = ?");
+                st.setString(1, String.valueOf(p.getId()));
                 rs = st.executeQuery();
                 
                 while (rs.next()) {                    
-                    c.setNombre(rs.getString("nombre"));
-                    c.setApellido(rs.getString("apellido"));
-                    c.setDireccion(rs.getString("direccion"));
-                    c.setTelefono(rs.getString("telefono"));
+                    p.setNombre(rs.getString("nombre"));
+                    p.setProducto(rs.getString("producto"));
+                    p.setDireccion(rs.getString("direccion"));
+                    p.setTelefono(rs.getString("telefono"));
                 }
                 
-                FrmIngresoCliente frm = new FrmIngresoCliente(c);
+                FrmIngresoProveedor frm = new FrmIngresoProveedor(p);
                 frm.setVisible(true);
                                 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al intentar consultar el cliente en la base de datos. "+ e,
+                    "Ocurrió un error al intentar consultar el provedor en la base de datos. "+ e,
                     "Editar",
                     JOptionPane.ERROR_MESSAGE);
             }finally{
@@ -252,47 +222,37 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 }
             }
         }        
-    }                                       
-
-    public boolean seleccionEdicionValida(){        
-        if(!(tResultado.getSelectedRowCount() >=1)){
-            JOptionPane.showMessageDialog(this,
-                    "Debe seleccionar al menos un registro a editar o eliminar",
-                    "Eliminar",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }        
-        return true;   
+ 
     }//GEN-LAST:event_bEditarActionPerformed
 
     private void bIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bIngresarActionPerformed
         // TODO add your handling code here:
-        FrmIngresoCliente frm = new FrmIngresoCliente();
+        FrmIngresoProveedor frm = new FrmIngresoProveedor();
         frm.setVisible(true);
     }//GEN-LAST:event_bIngresarActionPerformed
 
-    private void bEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminarActionPerformed
+    private void bEliminasrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEliminasrActionPerformed
         // TODO add your handling code here:
         if (seleccionEdicionValida()) {
-            ArrayList<Cliente> eliminados= new ArrayList<>(); 
+            ArrayList<Proveedor> eliminados= new ArrayList<>(); 
             for (int i = 0; i < tResultado.getSelectedRows().length; i++) {
-                Cliente c = new Cliente(tResultado.getValueAt(tResultado.getSelectedRows()[i],0).toString());
-                eliminados.add(c);                
+                Proveedor p = new Proveedor(tResultado.getValueAt(tResultado.getSelectedRows()[i],0).toString());
+                eliminados.add(p);                
             }
             PreparedStatement st=null; 
             try{           
                 con = Conexion.Conexion.conectar();
                 for (int i = 0; i < eliminados.size(); i++) { 
                                        
-                    st = con.prepareStatement("DELETE FROM cliente WHERE id = ?");            
+                    st = con.prepareStatement("DELETE FROM proveedor WHERE codigo = ?");            
                     st.setString(1, eliminados.get(i).getId());
                     st.executeUpdate();                    
                     
-                    System.out.println("Eliminacion de cliente con cedula: " + eliminados.get(i).getId() + " fue exitosa");
+                    System.out.println("Eliminacion de proveedor con cedula: " + eliminados.get(i).getId() + " fue exitosa");
                 }
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error al eliminar el cliente en la base de datos",
+                    "Ocurrió un error al eliminar el provedor en la base de datos",
                     "Eliminación",
                     JOptionPane.ERROR_MESSAGE);
             }finally{
@@ -312,18 +272,17 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 }
             }
         }        
-    }                                         
+    }//GEN-LAST:event_bEliminasrActionPerformed
 
- 
-    private boolean formularioValido() {       
-        if(!(String.valueOf(cbTipo.getSelectedItem()).equalsIgnoreCase("TODOS")) && tfDescripcion.getText().equalsIgnoreCase("")){
+     private boolean formularioValido() {       
+        if(!(String.valueOf(cbTodos.getSelectedItem()).equalsIgnoreCase("TODOS")) && tfDescripcion.getText().equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(this,
                     "Debe ingresar una descripción",
                     "Consulta",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if(String.valueOf(cbTipo.getSelectedItem()).equals("CEDULA")){
+        if(String.valueOf(cbTodos.getSelectedItem()).equals("ID")){
             try{
                 Integer.parseInt(tfDescripcion.getText());
             }catch(NumberFormatException e){
@@ -335,24 +294,24 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
             }    
         }        
         return true;
-    }//GEN-LAST:event_bEliminarActionPerformed
+    }                                         
 
-    private void consultarRegistros() {
+    private void consultarRegistro() {
         if (formularioValido()) {
             ResultSet rs=null; 
             PreparedStatement st=null;
             try {
                                 
-                ArrayList<Cliente> resultado= new ArrayList<>();
-                String tipo = String.valueOf(cbTipo.getSelectedItem());
+                ArrayList<Proveedor> resultado= new ArrayList<>();
+                String tipo = String.valueOf(cbTodos.getSelectedItem());
                 
                 con = Conexion.Conexion.conectar(); 
                                    
                 if(tipo.equalsIgnoreCase("Todos")){
-                    st = con.prepareStatement("SELECT * FROM cliente");            
+                    st = con.prepareStatement("SELECT * FROM proveedor");            
                     rs = st.executeQuery();
                 }else if (tipo.equalsIgnoreCase("id")){
-                    st = con.prepareStatement("SELECT * FROM cliente WHERE codigo like ? ");            
+                    st = con.prepareStatement("SELECT * FROM proveedor WHERE convert(codigo, char character set utf8) like ? ");            
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
                 }
@@ -360,19 +319,19 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 
                 while(rs.next())
                 {
-                    resultado.add(new Cliente (rs.getString("codigo"),rs.getString("nombre"),rs.getString("apellido"),rs.getString("direccion"),rs.getString("telefono")));                    
+                    resultado.add(new Proveedor (rs.getString("codigo"),rs.getString("nombre"),rs.getString("producto"),rs.getString("direccion"),rs.getString("telefono")));                    
                 }
                 
                 DefaultTableModel dtm = (DefaultTableModel) tResultado.getModel();
                 dtm.setRowCount(0);
                 ArrayList<Object> fila;
-                for (Cliente c:resultado) {
+                for (Proveedor p:resultado) {
                     fila = new ArrayList<>();
-                    fila.add(c.getId());
-                    fila.add(c.getNombre());
-                    fila.add(c.getApellido());
-                    fila.add(c.getDireccion());
-                    fila.add(c.getTelefono());
+                    fila.add(p.getId());
+                    fila.add(p.getNombre());
+                    fila.add(p.getProducto());
+                    fila.add(p.getDireccion());
+                    fila.add(p.getTelefono());
                     dtm.addRow(fila.toArray());
                 }
             } catch (Exception e) {
@@ -404,12 +363,18 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 }
             }   
         }
-    } 
-    
-    private Connection con;
-    
-  
-    
+       }
+     public boolean seleccionEdicionValida(){        
+        if(!(tResultado.getSelectedRowCount() >=1)){
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar al menos un registro a editar o eliminar",
+                    "Eliminar",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
+        return true;   
+    }                                       
+
     /**
      * @param args the command line arguments
      */
@@ -427,31 +392,29 @@ public class FrmMantenimientoCliente extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmMantenimientoCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMantenimientoProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmMantenimientoCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMantenimientoProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmMantenimientoCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMantenimientoProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmMantenimientoCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMantenimientoProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrmMantenimientoCliente().setVisible(true);
+            new FrmMantenimientoProveedor().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bConsultar;
     private javax.swing.JButton bEditar;
-    private javax.swing.JButton bEliminar;
+    private javax.swing.JButton bEliminasr;
     private javax.swing.JButton bIngresar;
-    private javax.swing.JComboBox<String> cbTipo;
+    private javax.swing.JComboBox<String> cbTodos;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JScrollPane spResultado;
     private javax.swing.JTable tResultado;
     private javax.swing.JTextField tfDescripcion;
     // End of variables declaration//GEN-END:variables
