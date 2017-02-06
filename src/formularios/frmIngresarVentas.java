@@ -55,6 +55,10 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         
         tfCodigo.setEditable(false);
         tfCliente.setEditable(false);
+        jcmbEstado.setEditable(false);
+        tfFecha.setEditable(false);
+        
+        editar=true;
     }
 
     /**
@@ -88,9 +92,9 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         jlTotal = new javax.swing.JLabel();
         jbElimnarProd = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        bLimpiar.setText("Anular");
+        bLimpiar.setText("Cancelar");
         bLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bLimpiarActionPerformed(evt);
@@ -263,6 +267,7 @@ public class frmIngresarVentas extends javax.swing.JFrame {
 
     private void bLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLimpiarActionPerformed
         limpiarFormulario();
+        dispose();
     }//GEN-LAST:event_bLimpiarActionPerformed
 
     private void tfCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfCodigoActionPerformed
@@ -273,24 +278,18 @@ public class frmIngresarVentas extends javax.swing.JFrame {
         if(ValidacionControles()){
             PreparedStatement st = null;
             try {
-                LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Montreal" ) );
-
                 con = Conexion.Conexion.conectar();
-                if (editar) {
-                    /*st = con.prepareStatement("UPDATE productos set nombre=?, marca = ?, fecha_caducidad = ?, cantidad=?, precio=?, iva=?  WHERE codigo = ?");
-                    st.setString(1, p.getNombre());
-                    st.setString(2, p.getMarca());
-                    st.setDate(3, Date.valueOf(todayLocalDate));
-                    st.setInt(4, p.getCantidad());
-                    st.setString(5, p.getPrecio());
-                    st.setString(6, p.getIva());
-                    st.setInt(7, p.getCodigo());
-
-                    st.executeUpdate();
-
-                    System.out.println("Actualización de productos exitosa");*/
                 
-                }
+                st = con.prepareStatement("UPDATE ventascabecera set subtotal=?, iva=?, total=?  WHERE codigo = ?");
+                st.setString(1, String.valueOf(_subtotal));
+                st.setString(2, String.valueOf(_iva));
+                st.setString(3, String.valueOf(_total));
+                st.setString(4, tfCodigo.getText());
+
+                st.executeUpdate();
+
+                System.out.println("Actualización de factura exitosa");
+                
                 limpiarFormulario();
 
                 dispose();
@@ -601,54 +600,55 @@ public class frmIngresarVentas extends javax.swing.JFrame {
     }
     
     private boolean facturaValido(String _codigo) {      
-        
-        ResultSet rs=null;                       
-        PreparedStatement st=null;
-        try
-        {   
-            con = Conexion.Conexion.conectar();
-            st = con.prepareStatement("SELECT * FROM ventascabecera WHERE codigo = ?");            
-            st.setString(1,_codigo);    
-            rs = st.executeQuery(); 
-            if(rs.next()){
-                JOptionPane.showMessageDialog(this,
-                    "Existe una con el mismo código",
-                    "Facturacion",
-                    JOptionPane.ERROR_MESSAGE);
+        if (!editar) {
+            ResultSet rs=null;                       
+            PreparedStatement st=null;
+            try
+            {   
+                con = Conexion.Conexion.conectar();
+                st = con.prepareStatement("SELECT * FROM ventascabecera WHERE codigo = ?");            
+                st.setString(1,_codigo);    
+                rs = st.executeQuery(); 
+                if(rs.next()){
+                    JOptionPane.showMessageDialog(this,
+                        "Existe una factura con el mismo código",
+                        "Facturacion",
+                        JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                return true;
+            }        
+            catch(Exception e){
+                    JOptionPane.showMessageDialog(this,
+                        "Error en la consulta de factura. (Validación) \n" + e,
+                        "Facturacion ",
+                        JOptionPane.ERROR_MESSAGE);          
                 return false;
-            }
-            return true;
-        }        
-        catch(Exception e){
-                JOptionPane.showMessageDialog(this,
-                    "Error en la consulta de factura. (Validación) \n" + e,
-                    "Facturacion ",
-                    JOptionPane.ERROR_MESSAGE);          
-            return false;
-        } finally{
-            if ( con!=null) {
-                try {
-                    con.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            } finally{
+                if ( con!=null) {
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
-            if (st!=null) {
-                try{
-                    st.close();
-                }catch (SQLException ex) {
-                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                if (st!=null) {
+                    try{
+                        st.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
 
-            if (rs!= null) {
-                try{
-                    rs.close();
-                }catch (SQLException ex) {
-                    Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                if (rs!= null) {
+                    try{
+                        rs.close();
+                    }catch (SQLException ex) {
+                        Logger.getLogger(FrmIngresarUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-        }
-        
-    }
+        }        
+        return true; //retorna solo si se esta editando
+    } 
 }

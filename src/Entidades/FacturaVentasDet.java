@@ -16,6 +16,12 @@ public class FacturaVentasDet {
     private double costoUnitario;
     private double total;
 
+    /**
+     * constructor que se carga cuando se hace la prefacturacion
+     * @param codigoFactura
+     * @param cantidad
+     * @param codigoProducto
+     */
     public FacturaVentasDet(String codigoFactura, int cantidad, String codigoProducto) {
         this.codigoFactura = codigoFactura;
         this.cantidad = cantidad;
@@ -66,6 +72,4 @@ public class FacturaVentasDet {
     public void setTotal(double total) {
         this.total = total;
     }
-    
-    
 }

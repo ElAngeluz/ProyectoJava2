@@ -172,8 +172,7 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                 if(tipo.equalsIgnoreCase("Todos")){
                     st = con.prepareStatement("SELECT * FROM ventascabecera ");            
                     rs = st.executeQuery();
-                }else if (tipo.equalsIgnoreCase("codigo")){
-                    //st = con.prepareStatement("SELECT * FROM productos WHERE convert(codigo, char character set utf8) like ? ");            
+                }else if (tipo.equalsIgnoreCase("codigo")){                              
                     st = con.prepareStatement("SELECT * FROM ventascabecera WHERE estado = 'efectiva' and idcliente like ? ");    
                     st.setString(1, "%"+String.valueOf(tfDescripcion.getText().toLowerCase())+"%");
                     rs = st.executeQuery();
@@ -205,8 +204,8 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this,
-                    "no se puede consultar! en la base de datos: "+ e,
-                    "Consulta",
+                    "No se puede consultar! en la base de datos: "+ e,
+                    "Facturación",
                     JOptionPane.ERROR_MESSAGE);
             }finally{
                 if ( con!=null) {
@@ -265,16 +264,14 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                 
                 st = con.prepareStatement("Update ventascabecera set estado='anulada' WHERE codigo = ?");
                 st.setString(1, String.valueOf(tResultado.getValueAt(tResultado.getSelectedRow(),0)));
-                st.executeUpdate();
+                st.executeUpdate();                  
 
-                //TODO: r 
-
-                System.out.println("Anulacion de factura con código: " + tResultado.getValueAt(tResultado.getSelectedRow(),0) + " fue exitosa");
+                System.out.println("Anulación de factura con código: " + tResultado.getValueAt(tResultado.getSelectedRow(),0) + " fue exitosa");
                 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this,
                     "Ocurrió un error al anular la factuea en la base de datos",
-                    "Eliminación",
+                    "Facturación",
                     JOptionPane.ERROR_MESSAGE);
             }finally{
                 if ( con!=null) {
@@ -293,21 +290,20 @@ public class frmMantenimientoFactura extends javax.swing.JFrame {
                 }
             }
         }
-    }//GEN-LAST:event_bEliminarActionPerformed
+    }
 
     public boolean seleccionEdicionValida(){        
         if(!(tResultado.getSelectedRowCount() >=1)){
             JOptionPane.showMessageDialog(this,
                     "Debe seleccionar al menos un registro a editar o eliminar",
-                    "Facturacion",
+                    "Facturación",
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }        
         return true;    
     }
     
-    private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
-        // TODO add your handling code here:
+    private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {
         if(seleccionEdicionValida()){
             FacturaVentacCab f= null;
             ResultSet rs=null;
