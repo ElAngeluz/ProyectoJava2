@@ -1,3 +1,6 @@
-/dist/
-nbproject/private/private.xml
-nbproject/private/private.properties
+/VentaCarrosUsados/nbproject/private/
+/VentaCarrosUsados/dist/
+/VentaCarrosUsados/build/
+/VentasCarrosUsados/nbproject/private/
+/VentasCarrosUsados/build/
+/VentasCarrosUsados/dist/
